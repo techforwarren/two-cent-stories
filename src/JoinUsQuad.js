@@ -1,32 +1,36 @@
-import React from 'react';
-/*<form>
-            
-            <label className="inputLabel">Email</label>
-            <input className="emailInput"></input>
-            <label className="inputLabel">Zip</label>
-            <input className="zipInput"></input>
-            <button className="Submit">Submit</button>
-        </form>
-        */
+import React, { useState } from 'react';
+
+
 export function JoinUsQuad(props){
+    const [emailInput, setEmailInput] = useState("");
+    const [zipInput, setZipInput] = useState("");
+    
+    function onSubmit(event){
+        event.preventDefault();
+    }
+    
+    function cleanZipcode(event){
+        let cleanValue = event.target.value.replace(/\D*/g, '');
+        setZipInput(cleanValue);
+    }
+
+    
     return(
-    <div className="JoinUsQuad">
-  
+    <div className="JoinUsQuad" onSubmit={onSubmit}> 
         <div id="header">
             <h3>ADD YOUR NAME</h3>
         </div>
         <div id="email">
            <label>Email</label>
-           <input></input>
+           <input value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
         </div>
         <div id="zip">
             <label>Zip</label>
-            <input></input>
+            <input value={zipInput} onChange={cleanZipcode} maxLength='5' minLength='5'></input>
         </div>
         <div id="submit">
-            <button>Submit</button>
+            <button onClick={onSubmit} id="submitButton">Submit</button>
         </div>
-  
     </div>
     );
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import Name from './Name';
-//import JoinUsSingle from './JoinUsSingle';
 import JoinUsQuad from './JoinUsQuad';
 
 export function NameBlock(props){
