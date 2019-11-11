@@ -9,6 +9,9 @@ export function AddYourStory(props){
 
     function onSubmit(event){
         event.preventDefault();
+        console.log(nameInput);
+        console.log(debtInput);
+        console.log(storyInput);
     }
     
     function cleanDebtInput(event){
@@ -23,16 +26,16 @@ export function AddYourStory(props){
         <h3 id="AYSheader">ADD YOUR STORY</h3>
 
         <div id="AYSname">
-            <label>Name</label>
-            <input value={nameInput} onChange={(event) => setNameInput(event.target.value)}></input>
+            <label htmlFor="name">Name</label>
+            <input id="name" value={nameInput} onChange={(event) => setNameInput(event.target.value)}></input>
         </div>
         <div id="AYSdebt">
-            <label>Student Loan Debt</label>
-            <input value={debtInput} onChange={cleanDebtInput} maxLength='6' minLength='1'></input>
+            <label htmlFor="debt">Student Loan Debt</label>
+            <input id="debt" value={debtInput} onChange={cleanDebtInput} maxLength='6' minLength='1'></input>
         </div>
         <div id='AYSstory'>
-            <label>Your Story</label>
-            <textarea></textarea>
+            <label htmlFor="story">Your Story</label>
+            <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)}></textarea>
         </div>
         <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
     </div>
