@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 export function JoinUsQuad(props){
     const [emailInput, setEmailInput] = useState("");
     const [zipInput, setZipInput] = useState("");
@@ -14,25 +13,23 @@ export function JoinUsQuad(props){
         setZipInput(cleanValue);
     }
 
-    
     return(
     <div className="JoinUsQuad" onSubmit={onSubmit}> 
-        <div id="header">
-            <h3>ADD YOUR NAME</h3>
+        <div id="JUQheader">
+            <h3>JOIN US</h3>
         </div>
-        <div id="email">
+        <div id="JUQemail">
            <label>Email</label>
            <input value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
         </div>
-        <div id="zip">
+        <div id="JUQzip">
             <label>Zip</label>
             <input value={zipInput} onChange={cleanZipcode} maxLength='5' minLength='5'></input>
         </div>
-        <div id="submit">
-            <button onClick={onSubmit} id="submitButton">Submit</button>
-        </div>
+        <button id="JUQsubmit">Submit</button>
     </div>
     );
 }
+
 export default JoinUsQuad;
 
