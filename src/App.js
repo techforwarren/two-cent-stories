@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import NameBlock from './NameBlock';
 import testData from './testData.json';
 
 function App() {
-  
+
   const billGatesTotal = 6379000000;
   let leftover = billGatesTotal;
 
@@ -20,7 +20,7 @@ function App() {
   getLeftover();
 
   return (
-    <div className="App">
+    <div className="App">      
       <div>
         <h1>Bill Gates would pay $6.379 billion next year under Elizabeth's wealth tax.</h1>
         <h3>Thats enough money to pay off student loan debt for ...</h3>
