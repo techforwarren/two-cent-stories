@@ -9,7 +9,7 @@
   color: white;
   font-size: 48px;
   line-height: 48px;
-  font-weight: bold;
+  font-weight: 600;
   padding: 0px 14px;
 }
 
@@ -72,7 +72,7 @@
 .modal-content {
   max-width: 600px;
   height: 70%;
-  padding: 16px;
+  padding: 14px 14px 36px 14px;
   border: 1px solid #d8dce3;
   border-radius: 3px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.5);
@@ -83,24 +83,23 @@
 }
 
 .modal-header{
-
-  height: 30px;
+  height: 49px;
   width: 100%;
-  font-size: 15px;
-  position: relative;
-  flex-grow: 1;
-  background-color: lightblue;
+
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 73px;
+  
 }
 
 .modal-body{
-  flex-grow: 10;
+  flex-grow: 1;
+  padding-top: 16px;
+  padding-right: 12px;
   overflow-y: auto;
-  background-color: lightcyan;
 }
 
 .modal-footer{
-  background-color: lightgreen;
-  flex-grow: 1;
   display: flex;
   justify-content: flex-end;
 }
@@ -108,6 +107,7 @@
 .cross-btn{
   background-color: transparent;
   float: right;
+  border: none;
 }
 
 .close-btn {
@@ -196,7 +196,7 @@ label{
   grid-area: submit;
   align-self: start;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 18px;
   background: #d5d5d5;
   border: none;
@@ -244,7 +244,7 @@ label{
   grid-area: submit;
   align-self: end;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 18px;
   background: #d5d5d5;
   border: none;
