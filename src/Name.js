@@ -5,6 +5,7 @@ export function Name(props){
     const [isModalVisible, setIsModalVisible] = useState(false);
         
     function toggleModal(){
+        document.body.classList.toggle('noscroll');
         setIsModalVisible(!isModalVisible);
     }
 
@@ -15,7 +16,10 @@ export function Name(props){
             {props.story.length <= 0 && <div> <strong>{props.firstName}</strong> ${props.debt.toLocaleString()}</div>}
             
             { isModalVisible && (
-                <Modal onModalClose={() => setIsModalVisible(false)}>
+                <Modal onModalClose={() => {
+                    document.body.classList.toggle('noscroll');
+                    setIsModalVisible(false)
+                }}>
                     <Modal.Header>{props.firstName}'s Story</Modal.Header>
                     <Modal.Body>{props.story}</Modal.Body>
                     <Modal.Footer>

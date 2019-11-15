@@ -5,8 +5,6 @@ const modalContext = createContext();
 
 export default function Modal({ children, onModalClose }) {
     
-
-
     useEffect(() => {
         function keyListener(e){
             const listener = keyListenerMap.get(e.keyCode);

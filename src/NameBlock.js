@@ -13,7 +13,6 @@ return(
             <>
             <Name key={person.id} firstName={person.firstName} debt={person.debt} story={person.story}></Name>
             {index === 13 && <AddYourStory/>}
-            {index === 40 && <JoinUsQuad/>}
             </>
         ))}
         
