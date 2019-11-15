@@ -74,8 +74,9 @@
 }
 
 .modal-content {
+  width: 80%;
   max-width: 600px;
-  min-width: 400px;
+  min-width: 40%;
   height: 70%;
   padding: 14px 14px 36px 14px;
   border: 1px solid #d8dce3;
