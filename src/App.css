@@ -163,7 +163,7 @@ label{
   border-bottom: 6px solid #B61B28;
   padding-right: 15px;
   padding-left: 15px;
-  grid-column: span 2 ;
+  grid-column: span 2;
   grid-row: span 6;
   text-align: left;
   display: grid;
@@ -194,6 +194,13 @@ label{
         
 #AYSdebt{
   grid-area: debt;
+}
+
+#AYSdebt input{
+  background-image: url("./dollarsign.svg");
+  background-repeat: no-repeat;
+  background-position: 8px 10px;
+  padding: 10px 10px 10px 19px;
 }
         
 #AYSstory{

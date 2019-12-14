@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 export function AddYourStory(props){
    
     const [nameInput, setNameInput] = useState("");
-    const [debtInput, setDebtInput] = useState("$");
+    const [debtInput, setDebtInput] = useState("");
     const [storyInput, setStoryInput] = useState("");
 
     function onSubmit(event){
@@ -31,7 +31,7 @@ export function AddYourStory(props){
         </div>
         <div id="AYSdebt">
             <label htmlFor="debt">Student Loan Debt</label>
-            <input id="debt" value={debtInput} onChange={cleanDebtInput} maxLength='6' minLength='1'></input>
+            <input id="debt" value={debtInput} onChange={cleanDebtInput} maxLength='7' minLength='1'></input>
         </div>
         <div id='AYSstory'>
             <label htmlFor="story">Your Story</label>
