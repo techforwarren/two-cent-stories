@@ -6,12 +6,14 @@ export function AddYourStory(props){
     const [nameInput, setNameInput] = useState("");
     const [debtInput, setDebtInput] = useState("");
     const [storyInput, setStoryInput] = useState("");
+    const [emailInput, setEmailInput] = useState("");
 
     function onSubmit(event){
         event.preventDefault();
         console.log(nameInput);
         console.log(debtInput);
         console.log(storyInput);
+        console.log(emailInput)
     }
     
     function cleanDebtInput(event){
@@ -36,6 +38,10 @@ export function AddYourStory(props){
         <div id='AYSstory'>
             <label htmlFor="story">Your Story</label>
             <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)}></textarea>
+        </div>
+        <div id='AYSemail'>
+            <label htmlFor="email">Email</label>
+            <input id="email" value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
         </div>
         <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
     </div>
