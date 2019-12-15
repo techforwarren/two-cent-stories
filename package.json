@@ -1,8 +1,8 @@
 {
-  "name": "bill-gates",
+  "name": "two-cent-stories",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://joziesands.github.io/bill-gates",
+  "homepage": "http://techforwarren.github.io/two-cent-stories",
   "dependencies": {
     "gh-pages": "^2.1.1",
     "react": "^16.11.0",
