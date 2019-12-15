@@ -66,3 +66,20 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+## Server
+
+`npm install -g serverless`
+
+`npm install`
+
+`virtualenv venv --python=python3`
+
+`source venv/bin/activate`
+
+`pip install -r requirements-dev.txt`
+
+`aws configure`
+
+`sls deploy`
