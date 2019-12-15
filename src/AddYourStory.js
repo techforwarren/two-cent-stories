@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import Modal from './Modal';
 
 export function AddYourStory(props){
    
@@ -8,8 +8,20 @@ export function AddYourStory(props){
     const [storyInput, setStoryInput] = useState("");
     const [emailInput, setEmailInput] = useState("");
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
+        
+    function toggleModal(){
+        document.body.classList.toggle('noscroll');
+        setIsModalVisible(!isModalVisible);
+    }
+
     function onSubmit(event){
         event.preventDefault();
+
+        // send to db
+
+        // show confirmation modal (your story will be posted after ...)
+        toggleModal();
         console.log(nameInput);
         console.log(debtInput);
         console.log(storyInput);
@@ -44,6 +56,20 @@ export function AddYourStory(props){
             <input id="email" value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
         </div>
         <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
+
+        { isModalVisible && (
+            <Modal onModalClose={() => {
+                document.body.classList.toggle('noscroll');
+                setIsModalVisible(false)
+            }}>
+                <Modal.Header>Thanks, {nameInput}!</Modal.Header>
+                <Modal.Body> 
+                    you'll receive an email ...</Modal.Body>
+                <Modal.Footer>
+                    <Modal.Footer.CloseBtn>Close</Modal.Footer.CloseBtn>
+                </Modal.Footer>
+            </Modal>
+        )}
     </div>
     );
 }
