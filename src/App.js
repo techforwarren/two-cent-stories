@@ -25,8 +25,8 @@ function App() {
       <div className="App-header">
         <div className="App-container">
           <div className="App-section">
-            <h1 className="text-xl text-center">Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
-            <p className="text-lg text-center">That’s enough money to pay off student loan debt for ...</p>
+            <h1 className="text-xl">Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
+            <p className="text-lg">That’s enough money to pay off student loan debt for ...</p>
           </div>
         </div>
       </div>
