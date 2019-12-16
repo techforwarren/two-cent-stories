@@ -11,8 +11,6 @@
 .App-main,
 .App-footer {
   width: 100vw;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
 .App-header,
@@ -33,6 +31,7 @@
   width: 100%;
   max-width: 40rem;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 @media (min-width: 748px) {
