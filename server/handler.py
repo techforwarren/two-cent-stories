@@ -1,51 +1,39 @@
 import json
-import boto3
-import decimal
-from boto3.dynamodb.conditions import Key, Attr
+from databases import ES_DB  # TODO fix import highlighting
 
-class DynamoEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, decimal.Decimal):
-            return str(o)
-        return super(DynamoEncoder, self).default(o)
-
-dynamodb = boto3.resource('dynamodb')
-
-table = dynamodb.Table('Submission')
 
 def get_submissions(event, context):
-    response = table.query(
-        # ProjectionExpression="first_name, student_loan_debt_amount, id, created_date, story, verified_date",
-        IndexName='verified-index',
-        ScanIndexForward=True,
-        KeyConditionExpression=Key('status').eq("verified"),
-        Limit=2
-        # ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
-        # KeyConditionExpression=Key('year').eq(1992) & Key('title').between('A', 'L')
-    )
-    # response = table.query(
-    #     ProjectionExpression="first_name, student_loan_debt_amount, id, created_date, story, verified_date",
-    #     # ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
-    #     # KeyConditionExpression=Key('year').eq(1992) & Key('title').between('A', 'L')
-    # )
+    results = ES_DB.search(index="submissions", body={
+        "query": {"exists": {"field": "verifiedDate"}},
+        "_source": ["firstName", "debt", "story", "id", "verifiedDate"],
+        "sort": [
+            {"verifiedDate": {"order": "desc"}}
+        ],
+        "aggs": {
+            "total_debt": {"sum": {"field": "debt"}}
+        },
+        "size": 200
+    })
 
-    submissions = [{
-        "id": submission["id"],
-        "firstName": submission["first_name"],
-        "debt": submission["student_loan_debt_amount"],
-        "story": submission.get("story")
-    } for submission in response["Items"]]
+    total_debt = results["aggregations"]["total_debt"]["value"]
 
-    for submission in submissions:
-        print(json.dumps(submission, cls=DynamoEncoder))
+    submissions = [submission["_source"] for submission in results["hits"]["hits"]]
+
+    # TODO set something in the cookie perhaps to indicate when they got to page
 
     return {
         "statusCode": 200,
-        "body": json.dumps([{"people": submissions}], cls=DynamoEncoder) # TODO rename people
+        "body": json.dumps([{
+            "people": submissions, # TODO remove people after frontend migrates
+            "submissions": submissions,
+            "total_debt": total_debt,
+        }])
     }
+
 
 def post_submission(event, context):
     print(event)
+    # TODO check something in the cookie perhaps
 
     return {
         "statusCode": 200
@@ -57,27 +45,13 @@ def hello(event, context):
         "message": "We did it!",
         "input": event
     }
-
     response = {
         "statusCode": 200,
         "headers": {'x-custom-header': 'My Header Value'},
         # "body": json.dumps(body)
         "body": json.dumps(body)
     }
-
     return response
-
-
-def goodbye(event, context):
-    response = {
-        "statusCode": 200,
-        "headers": {'x-custom-header': 'My Header Value'},
-        # "body": json.dumps(body)
-        "body": json.dumps("goodbye")
-    }
-
-    return response
-
 
 def get_submissions_static(event, context):
     submissions = {"people": [
@@ -393,5 +367,3 @@ def get_submissions_static(event, context):
         "statusCode": 200,
         "body": json.dumps(submissions)
     }
-
-

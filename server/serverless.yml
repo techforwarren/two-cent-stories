@@ -11,19 +11,22 @@ provider:
     restApi: true
   tracing:
     apiGateway: true
+#    lambda: true
+  memorySize: 128 # in MB
+  versionFunctions: false # TODO make true once it's prod
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
+        - es:ESHttpPost
+        - es:ESHttpPut
+        - es:ESHttpDelete
+        - es:ESHttpGet
+        - es:DescribeElasticsearchDomain
       Resource:
-        - { "Fn::GetAtt": ["SubmissionTable", "Arn" ] }
+        - { "Fn::GetAtt": ["SubmissionSearch", "DomainArn"] }
+        - { "Fn::Join": ["", ["Fn::GetAtt": ["SubmissionSearch", "DomainArn"], "/*"]] }
 
-# you can overwrite defaults here
+
 stage: dev # TODO make this configurable
 region: us-east-1
 
@@ -35,10 +38,6 @@ custom:
     maxConcurrentRequests: 500
   pythonRequirements:
     dockerizePip: non-linux
-  dynamodb:
-    # If you only want to use DynamoDB Local in some stages, declare them here
-    stages:
-      - dev
 
 # you can define service wide environment variables here
 #  environment:
@@ -58,7 +57,7 @@ package:
 
 functions:
   submissions:
-    handler: handler.get_submissions_static # TODO add caching
+    handler: handler.get_submissions # TODO add caching
     events:
       - http:
           path: /submissions
@@ -99,10 +98,6 @@ functions:
 #            parameters:
 #              paths:
 #                id: true
-#    JSON schema validation
-#          request:
-#            schema:
-#              application/json: ${file(create_request.json)}
 #  goodbye:
 #    handler: handler.goodbye
 #    #    The following are a few example events you can configure
@@ -142,62 +137,77 @@ functions:
 
 resources:
   Resources:
-    SubmissionTable:
-      Type: AWS::DynamoDB::Table
-#     DeletionPolicy: Retain
+    SubmissionSearch:
+      Type: "AWS::Elasticsearch::Domain"
       Properties:
-        TableName: Submission
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-#          - AttributeName: name
+        ElasticsearchVersion: "7.1"
+        DomainName: "submissions-es-${self:provider.stage}"
+        ElasticsearchClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: "1"
+          ZoneAwarenessEnabled: false
+          InstanceType: "t2.small.elasticsearch"
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: "gp2"
+#    SubmissionTable:
+#      Type: AWS::DynamoDB::Table
+##     DeletionPolicy: Retain
+#      Properties:
+#        TableName: Submission
+#        AttributeDefinitions:
+#          - AttributeName: id
 #            AttributeType: S
-#          - AttributeName: first_name
+##          - AttributeName: name
+##            AttributeType: S
+##          - AttributeName: first_name
+##            AttributeType: S
+##          - AttributeName: student_loan_debt_amount
+##            AttributeType: N
+##          - AttributeName: story
+##            AttributeType: S
+##          - AttributeName: email
+##            AttributeType: S
+#          - AttributeName: email_clean
 #            AttributeType: S
-#          - AttributeName: student_loan_debt_amount
-#            AttributeType: N
-#          - AttributeName: story
+#          - AttributeName: verified_date
 #            AttributeType: S
-#          - AttributeName: email
+#          - AttributeName: status
 #            AttributeType: S
-          - AttributeName: email_clean
-            AttributeType: S
-          - AttributeName: verified_date
-            AttributeType: S
-          - AttributeName: status
-            AttributeType: S
-#          - AttributeName: token_verify
-#            AttributeType: S
-#          - AttributeName: token_delete
-#            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-#          - AttributeName: verified # TODO This can't be a bool and also the sort key can't be missing apparently???
-#            KeyType: RANGE
-        GlobalSecondaryIndexes:
-          - IndexName: "clean-email-index"
-            KeySchema:
-              - AttributeName: email_clean
-                KeyType: HASH
-            Projection:
-              NonKeyAttributes: []
-              ProjectionType: "ALL" # TODO probably don't need to project em all?
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
-          - IndexName: "verified-index"
-            KeySchema:
-              - AttributeName: status # this is not great because it will just create one partition, but it will give us sorting behavior
-                KeyType: HASH
-              - AttributeName: verified_date
-                KeyType: RANGE
-            Projection:
-              NonKeyAttributes: []
-              ProjectionType: "ALL" # TODO probably don't need to project em all?
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+##          - AttributeName: token_verify
+##            AttributeType: S
+##          - AttributeName: token_delete
+##            AttributeType: S
+#        KeySchema:
+#          - AttributeName: id
+#            KeyType: HASH
+##          - AttributeName: verified # TODO This can't be a bool and also the sort key can't be missing apparently???
+##            KeyType: RANGE
+#        GlobalSecondaryIndexes:
+#          - IndexName: "clean-email-index"
+#            KeySchema:
+#              - AttributeName: email_clean
+#                KeyType: HASH
+#            Projection:
+#              NonKeyAttributes: []
+#              ProjectionType: "ALL" # TODO probably don't need to project em all?
+#            ProvisionedThroughput:
+#              ReadCapacityUnits: 1
+#              WriteCapacityUnits: 1
+#          - IndexName: "verified-index"
+#            KeySchema:
+#              - AttributeName: status # this is not great because it will just create one partition, but it will give us sorting behavior
+#                KeyType: HASH
+#              - AttributeName: verified_date
+#                KeyType: RANGE
+#            Projection:
+#              NonKeyAttributes: []
+#              ProjectionType: "ALL" # TODO probably don't need to project em all?
+#            ProvisionedThroughput:
+#              ReadCapacityUnits: 1
+#              WriteCapacityUnits: 1
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1

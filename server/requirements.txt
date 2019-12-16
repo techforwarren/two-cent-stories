@@ -11,3 +11,8 @@ rsa==3.4.2
 s3transfer==0.2.1
 six==1.13.0
 urllib3==1.25.7
+elasticsearch>=7.0.0,<8.0.0
+elasticsearch-dsl>=7.0.0,<8.0.0
+certifi
+requests
+requests-aws4auth

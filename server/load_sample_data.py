@@ -2,11 +2,18 @@ import boto3
 import json
 import decimal
 import datetime
+from databases import ES_DB
 
-dynamodb = boto3.resource('dynamodb')
+from elasticsearch_dsl import Search, Index
 
-table = dynamodb.Table('Submission')
+# TODO set mapping for story field because it is long
 
+submissions_index = Index('submissions', using=ES_DB)
+
+submissions_index.settings(
+    number_of_shards=1,
+    number_of_replicas=0
+)
 submissions = [
     {
         "id": "0",
@@ -336,36 +343,24 @@ submissions = [
 
 
 def load_data(event, context):
+    submissions_index.create(ignore=400)
+
     for submission in submissions:
         print("Adding submission:", submission)
 
         record = {
-                'first_name': submission["firstName"],
-                'student_loan_debt_amount': submission["debt"],
+                'firstName': submission["firstName"],
+                'debt': submission["debt"],
                 'id': submission["id"],
-                "created_date": datetime.datetime.now().isoformat()
+                'story': submission["story"],
+                "createdDate": datetime.datetime.now().isoformat(),
+                "verifiedDate": datetime.datetime.now().isoformat() if submission.get('verified') is not False else None,
+                "tokenVerify": submission.get("token_verify"),
+                "tokenDelete": submission.get("token_delete"),
             }
 
-        if submission.get("story"):
-            record["story"] = submission["story"]
-
-        if submission.get("verified") is not False:
-            record["verified_date"] = datetime.datetime.now().isoformat()
-            record["status"] = "verified"
-
-        table.put_item(
-            Item=record
-        )
+        ES_DB.index(index='submissions', id=submission["id"], body=record)
 
 
 def delete_data(event, context):
-    for submission in submissions:
-        print("Deleting submission:", submission)
-
-        response = table.delete_item(
-            Key={
-                'id': submission["id"]
-            },
-        )
-
-        print(response)
+    submissions_index.delete()
