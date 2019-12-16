@@ -39,18 +39,10 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
 
-# you can define service wide environment variables here
+# TODO define service wide environment variables here
 #  environment:
 #    variable1: value1
 
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
 package:
   exclude:
     venv/**
@@ -73,16 +65,12 @@ functions:
           request:
             schema:
               application/json: ${file(create_request.json)}
-  submissions_from_db:
-    handler: handler.get_submissions
   load_sample_data:
     handler: load_sample_data.load_data
   delete_sample_data:
     handler: load_sample_data.delete_data
 
-#          throttling:
-#            maxRequestsPerSecond: 2000
-#            maxConcurrentRequests: 1000
+# Examples for later
 #          request:
 #            parameters:
 #              querystrings:
@@ -98,45 +86,15 @@ functions:
 #            parameters:
 #              paths:
 #                id: true
-#  goodbye:
-#    handler: handler.goodbye
-#    #    The following are a few example events you can configure
-#    #    NOTE: Please make sure to change your handler code to work with those events
-#    #    Check the event documentation for details
-#    events:
-#      - http:
-#          path: /logout
-#          method: get
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
-
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
 
-# you can add CloudFormation resource templates here
-#resources:
-# TODO ADD WAF for rate limiting and such
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
 
 
 resources:
   Resources:
+    # TODO ADD WAF for rate limiting and such
     SubmissionSearch:
       Type: "AWS::Elasticsearch::Domain"
       Properties:
@@ -152,62 +110,7 @@ resources:
           Iops: 0
           VolumeSize: 10
           VolumeType: "gp2"
-#    SubmissionTable:
-#      Type: AWS::DynamoDB::Table
-##     DeletionPolicy: Retain
-#      Properties:
-#        TableName: Submission
-#        AttributeDefinitions:
-#          - AttributeName: id
-#            AttributeType: S
-##          - AttributeName: name
-##            AttributeType: S
-##          - AttributeName: first_name
-##            AttributeType: S
-##          - AttributeName: student_loan_debt_amount
-##            AttributeType: N
-##          - AttributeName: story
-##            AttributeType: S
-##          - AttributeName: email
-##            AttributeType: S
-#          - AttributeName: email_clean
-#            AttributeType: S
-#          - AttributeName: verified_date
-#            AttributeType: S
-#          - AttributeName: status
-#            AttributeType: S
-##          - AttributeName: token_verify
-##            AttributeType: S
-##          - AttributeName: token_delete
-##            AttributeType: S
-#        KeySchema:
-#          - AttributeName: id
-#            KeyType: HASH
-##          - AttributeName: verified # TODO This can't be a bool and also the sort key can't be missing apparently???
-##            KeyType: RANGE
-#        GlobalSecondaryIndexes:
-#          - IndexName: "clean-email-index"
-#            KeySchema:
-#              - AttributeName: email_clean
-#                KeyType: HASH
-#            Projection:
-#              NonKeyAttributes: []
-#              ProjectionType: "ALL" # TODO probably don't need to project em all?
-#            ProvisionedThroughput:
-#              ReadCapacityUnits: 1
-#              WriteCapacityUnits: 1
-#          - IndexName: "verified-index"
-#            KeySchema:
-#              - AttributeName: status # this is not great because it will just create one partition, but it will give us sorting behavior
-#                KeyType: HASH
-#              - AttributeName: verified_date
-#                KeyType: RANGE
-#            Projection:
-#              NonKeyAttributes: []
-#              ProjectionType: "ALL" # TODO probably don't need to project em all?
-#            ProvisionedThroughput:
-#              ReadCapacityUnits: 1
-#              WriteCapacityUnits: 1
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 1
-#          WriteCapacityUnits: 1
+  #  Outputs:
+  #     NewOutput:
+  #       Description: "Description for the output"
+  #       Value: "Some output value"

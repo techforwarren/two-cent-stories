@@ -70,18 +70,22 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 ## Server
 
+### Development and Deployment
+
+#### Install dependencies
 `npm install -g serverless`
-
 `cd server`
-
 `npm install`
-
 `virtualenv venv --python=python3`
-
 `source venv/bin/activate`
-
-`pip install -r requirements-dev.txt`
-
+`pip install -r requirements.txt`
 `aws configure`
 
+#### Deploy
 `sls deploy`
+
+#### Load data into ElasticSearch
+`sls invoke local -f load_sample_data`
+
+#### Test getting submissions
+`sls invoke local -f submissions_from_db`
