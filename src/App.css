@@ -1,9 +1,64 @@
+/* App Root */
+
 .App {
-  text-align: center;
-  max-width: 80%;
-  margin: 0 auto;
   font-family: Helvetica, Arial, sans-serif;
 }
+
+
+/* Page Layout */
+
+.App-header,
+.App-main,
+.App-footer {
+  width: 100vw;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.App-main {
+  min-height: 36rem;
+}
+
+.App-footer {
+  min-height: 20rem;
+}
+
+.App-container {
+  width: 100%;
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 748px) {
+  .App-header,
+  .App-main,
+  .App-footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1224px) {
+  .App-header,
+  .App-main,
+  .App-footer {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  .App-container {
+    max-width: 60rem;
+  }
+}
+
+@media (min-width: 1700px) {
+  .App-main .App-container {
+    max-width: 80rem;
+  }
+}
+
+
+/* */
 
 .JoinUsSingle{
   background-color: #B61B28;

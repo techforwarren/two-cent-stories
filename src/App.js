@@ -21,20 +21,31 @@ function App() {
 
   return (
     <div className="App">      
-      <div>
-        <h1>Bill Gates would pay $6.379 billion next year under Elizabeth's wealth tax.</h1>
-        <h3>Thats enough money to pay off student loan debt for ...</h3>
-      </div>
-      <NameBlock data={data}/>
-      <div>
-        {leftover > 0 && 
-        <h3>... and still have ${leftover.toLocaleString()} leftover.</h3>
-        }
-        
-        <p>Elizabeth's wealth tax, which only impacts America's 75,000 wealthiest families, would generate enough revenue to cover universal child care, quality public education, forgive student loan debt, provide free public college, and help finance Medicare for All.</p>
-        <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the Wealth tax and join the fight</a>
+      <div className="App-header">
+        <div className="App-container">
+          <h1>Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
+          <h3>That’s enough money to pay off student loan debt for ...</h3>
+        </div>
       </div>
 
+      <div className="App-main">
+        <div className="App-container">
+          <NameBlock data={data}/>
+        </div>
+      </div>
+
+      <div className="App-footer">
+        <div className="App-container">
+          <div>
+            {leftover > 0 && 
+            <h3>... and still have ${leftover.toLocaleString()} leftover.</h3>
+            }
+            
+            <p>Elizabeth’s wealth tax, which only impacts America’s 75,000 wealthiest families, would generate enough revenue to cover universal child care, quality public education, forgive student loan debt, provide free public college, and help finance Medicare for All.</p>
+            <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the Wealth tax and join the fight</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
