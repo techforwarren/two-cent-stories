@@ -11,8 +11,7 @@
 .App-main,
 .App-footer {
   width: 100vw;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 2rem 1rem;
 }
 
 .App-main {
@@ -26,8 +25,7 @@
 .App-container {
   width: 100%;
   max-width: 40rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
 }
 
 @media (min-width: 748px) {
@@ -55,6 +53,43 @@
   .App-main .App-container {
     max-width: 80rem;
   }
+}
+
+
+/* Text Sizing */
+
+.App-header,
+.App-main,
+.App-footer {
+  font-size: 1rem;
+}
+
+@media (min-width: 748px) {
+  .App-header,
+  .App-main,
+  .App-footer {
+    font-size: 1.25rem;
+  }
+}
+
+.text-sm {
+  font-size: 0.875em;
+}
+
+.text-base {
+  font-size: 1em;
+}
+
+.text-lg {
+  font-size: 1.5em;
+}
+
+.text-xl {
+  font-size: 2em;
+}
+
+.text-2xl {
+  font-size: 3em;
 }
 
 

@@ -1,4 +1,6 @@
 html {
+  overflow-x: hidden;
+  overflow-y: scroll;
   font-size: 16px;
 }
 
