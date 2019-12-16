@@ -15,7 +15,7 @@
 
 .App-header,
 .App-footer {
-  padding: 2rem 0;
+  padding: 3rem 0;
 }
 
 .App-main {
@@ -23,7 +23,7 @@
 }
 
 .App-footer {
-  min-height: 20rem;
+  min-height: 24rem;
 }
 
 .App-container {
@@ -38,20 +38,13 @@
 
 @media (min-width: 748px) {
   .App-header,
-  .App-main,
-  .App-footer {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
-}
-
-@media (min-width: 1224px) {
-  .App-header,
-  .App-main,
   .App-footer {
     padding-top: 4rem;
     padding-bottom: 4rem;
   }
+}
+
+@media (min-width: 1224px) {
   .App-container {
     max-width: 60rem;
   }
