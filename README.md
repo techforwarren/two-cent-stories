@@ -72,6 +72,8 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 `npm install -g serverless`
 
+`cd server`
+
 `npm install`
 
 `virtualenv venv --python=python3`
