@@ -15,8 +15,7 @@
 
 .App-header,
 .App-footer {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 2rem 0;
 }
 
 .App-main {
@@ -31,6 +30,9 @@
   width: 100%;
   max-width: 40rem;
   margin: 0 auto;
+}
+
+.App-section {
   padding: 0 1rem;
 }
 
@@ -62,7 +64,7 @@
 }
 
 
-/* Text Sizing */
+/* Typography Helpers */
 
 .App-header,
 .App-main,
@@ -96,6 +98,10 @@
 
 .text-2xl {
   font-size: 3em;
+}
+
+.text-center {
+  text-align: center;
 }
 
 

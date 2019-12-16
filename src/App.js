@@ -20,34 +20,40 @@ function App() {
   getLeftover();
 
   return (
-    <div className="App">      
+    <div className="App">
+
       <div className="App-header">
         <div className="App-container">
-          <h1 className="text-xl">Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
-          <p className="text-lg">That’s enough money to pay off student loan debt for ...</p>
+          <div className="App-section">
+            <h1 className="text-xl text-center">Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
+            <p className="text-lg text-center">That’s enough money to pay off student loan debt for ...</p>
+          </div>
         </div>
       </div>
 
       <div className="App-main">
         <div className="App-container">
-          <NameBlock data={data}/>
+          <div className="App-section">
+            <NameBlock data={data}/>
+          </div>
         </div>
       </div>
 
       <div className="App-footer">
         <div className="App-container">
-          <div>
+          <div className="App-section">
             {leftover > 0 && 
-            <p className="text-lg">... and still have ${leftover.toLocaleString()} leftover.</p>
+            <p className="text-lg text-center">... and still have ${leftover.toLocaleString()} leftover.</p>
             }
             
             <p className="text-base">Elizabeth’s wealth tax, which only impacts America’s 75,000 wealthiest families, would generate enough revenue to cover universal child care, quality public education, forgive student loan debt, provide free public college, and help finance Medicare for All.</p>
-            <p className="text-base">
+            <p className="text-base text-center">
               <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the Wealth tax and join the fight</a>
             </p>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
