@@ -1,6 +1,7 @@
 service: two-cent-stories
 plugins:
   - serverless-api-gateway-throttling
+  - serverless-python-requirements
 provider:
   name: aws
   runtime: python3.8
@@ -10,9 +11,20 @@ provider:
     restApi: true
   tracing:
     apiGateway: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["SubmissionTable", "Arn" ] }
 
 # you can overwrite defaults here
-stage: dev
+stage: dev # TODO make this configurable
 region: us-east-1
 
 
@@ -21,22 +33,12 @@ custom:
   apiGatewayThrottling:
     maxRequestsPerSecond: 1000
     maxConcurrentRequests: 500
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+  pythonRequirements:
+    dockerizePip: non-linux
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
 
 # you can define service wide environment variables here
 #  environment:
@@ -50,15 +52,34 @@ custom:
 #  exclude:
 #    - exclude-me.py
 #    - exclude-me-dir/**
+package:
+  exclude:
+    venv/**
 
 functions:
   submissions:
-    handler: handler.get_submissions
+    handler: handler.get_submissions_static # TODO add caching
     events:
       - http:
           path: /submissions
           method: get
           cors: true
+  create_submission:
+    handler: handler.post_submission
+    events:
+      - http:
+          path: /submissions
+          method: post
+          cors: true
+          request:
+            schema:
+              application/json: ${file(create_request.json)}
+  submissions_from_db:
+    handler: handler.get_submissions
+  load_sample_data:
+    handler: load_sample_data.load_data
+  delete_sample_data:
+    handler: load_sample_data.delete_data
 
 #          throttling:
 #            maxRequestsPerSecond: 2000
@@ -119,18 +140,64 @@ functions:
 #       Value: "Some output value"
 
 
-#resources:
-#  Resources:
-#    usersTable:
-#      Type: AWS::DynamoDB::Table
-#      Properties:
-#        TableName: submission
-#        AttributeDefinitions:
+resources:
+  Resources:
+    SubmissionTable:
+      Type: AWS::DynamoDB::Table
+#     DeletionPolicy: Retain
+      Properties:
+        TableName: Submission
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+#          - AttributeName: name
+#            AttributeType: S
+#          - AttributeName: first_name
+#            AttributeType: S
+#          - AttributeName: student_loan_debt_amount
+#            AttributeType: N
+#          - AttributeName: story
+#            AttributeType: S
 #          - AttributeName: email
 #            AttributeType: S
-#        KeySchema:
-#          - AttributeName: email
-#            KeyType: HASH
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 1
-#          WriteCapacityUnits: 1
+          - AttributeName: email_clean
+            AttributeType: S
+          - AttributeName: verified_date
+            AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+#          - AttributeName: token_verify
+#            AttributeType: S
+#          - AttributeName: token_delete
+#            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+#          - AttributeName: verified # TODO This can't be a bool and also the sort key can't be missing apparently???
+#            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: "clean-email-index"
+            KeySchema:
+              - AttributeName: email_clean
+                KeyType: HASH
+            Projection:
+              NonKeyAttributes: []
+              ProjectionType: "ALL" # TODO probably don't need to project em all?
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: "verified-index"
+            KeySchema:
+              - AttributeName: status # this is not great because it will just create one partition, but it will give us sorting behavior
+                KeyType: HASH
+              - AttributeName: verified_date
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes: []
+              ProjectionType: "ALL" # TODO probably don't need to project em all?
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

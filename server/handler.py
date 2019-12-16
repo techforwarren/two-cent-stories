@@ -1,7 +1,85 @@
 import json
+import boto3
+import decimal
+from boto3.dynamodb.conditions import Key, Attr
 
+class DynamoEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return str(o)
+        return super(DynamoEncoder, self).default(o)
+
+dynamodb = boto3.resource('dynamodb')
+
+table = dynamodb.Table('Submission')
 
 def get_submissions(event, context):
+    response = table.query(
+        # ProjectionExpression="first_name, student_loan_debt_amount, id, created_date, story, verified_date",
+        IndexName='verified-index',
+        ScanIndexForward=True,
+        KeyConditionExpression=Key('status').eq("verified"),
+        Limit=2
+        # ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
+        # KeyConditionExpression=Key('year').eq(1992) & Key('title').between('A', 'L')
+    )
+    # response = table.query(
+    #     ProjectionExpression="first_name, student_loan_debt_amount, id, created_date, story, verified_date",
+    #     # ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
+    #     # KeyConditionExpression=Key('year').eq(1992) & Key('title').between('A', 'L')
+    # )
+
+    submissions = [{
+        "id": submission["id"],
+        "firstName": submission["first_name"],
+        "debt": submission["student_loan_debt_amount"],
+        "story": submission.get("story")
+    } for submission in response["Items"]]
+
+    for submission in submissions:
+        print(json.dumps(submission, cls=DynamoEncoder))
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps([{"people": submissions}], cls=DynamoEncoder) # TODO rename people
+    }
+
+def post_submission(event, context):
+    print(event)
+
+    return {
+        "statusCode": 200
+    }
+
+
+def hello(event, context):
+    body = {
+        "message": "We did it!",
+        "input": event
+    }
+
+    response = {
+        "statusCode": 200,
+        "headers": {'x-custom-header': 'My Header Value'},
+        # "body": json.dumps(body)
+        "body": json.dumps(body)
+    }
+
+    return response
+
+
+def goodbye(event, context):
+    response = {
+        "statusCode": 200,
+        "headers": {'x-custom-header': 'My Header Value'},
+        # "body": json.dumps(body)
+        "body": json.dumps("goodbye")
+    }
+
+    return response
+
+
+def get_submissions_static(event, context):
     submissions = {"people": [
         {
             "id": 0,
@@ -317,28 +395,3 @@ def get_submissions(event, context):
     }
 
 
-def hello(event, context):
-    body = {
-        "message": "We did it!",
-        "input": event
-    }
-
-    response = {
-        "statusCode": 200,
-        "headers": {'x-custom-header': 'My Header Value'},
-        # "body": json.dumps(body)
-        "body": json.dumps(body)
-    }
-
-    return response
-
-
-def goodbye(event, context):
-    response = {
-        "statusCode": 200,
-        "headers": {'x-custom-header': 'My Header Value'},
-        # "body": json.dumps(body)
-        "body": json.dumps("goodbye")
-    }
-
-    return response
