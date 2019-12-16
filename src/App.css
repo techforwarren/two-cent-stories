@@ -226,6 +226,11 @@ label{
   height: 42px;
   }
 
+.error{
+  background-color: rgba(182,27,40, 0.2);
+  border: rgb(182,27,40) 2px solid;
+}
+
   /* */
   
 .JoinUsQuad{
