@@ -11,7 +11,14 @@
 .App-main,
 .App-footer {
   width: 100vw;
-  padding: 2rem 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.App-header,
+.App-footer {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .App-main {
