@@ -56,6 +56,17 @@ functions:
           method: get
           cors: true
   create_submission:
+    handler: handler.post_verified_submission # TODO make this post_submission after verification process works
+    events:
+      - http:
+          path: /submissions
+          method: post
+          cors: true
+          request:
+            schema:
+              application/json: ${file(create_request.json)}
+            passThrough: NEVER
+  create_unverified_submission: # TODO remove after verification process works
     handler: handler.post_submission
     events:
       - http:
@@ -70,6 +81,8 @@ functions:
     handler: load_sample_data.load_data
   delete_sample_data:
     handler: load_sample_data.delete_data
+  list_data:
+    handler: load_sample_data.list_data
 
 # Examples for later
 #          request:
