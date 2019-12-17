@@ -362,5 +362,22 @@ def load_data(event, context):
         ES_DB.index(index='submissions', id=submission["id"], body=record)
 
 
+def list_data(event, context):
+    results = ES_DB.search(index="submissions", body={
+        "sort": [
+            {"verifiedDate": {"order": "desc"}}
+        ],
+        "size": 200
+    })
+
+    submissions = [submission["_source"] for submission in results["hits"]["hits"]]
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps([{
+            "submissions": submissions,
+        }])
+    }
+
 def delete_data(event, context):
     submissions_index.delete()
