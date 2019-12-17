@@ -70,7 +70,7 @@ functions:
     handler: handler.post_submission
     events:
       - http:
-          path: /submissions
+          path: /submissions/unverified
           method: post
           cors: true
           request:
