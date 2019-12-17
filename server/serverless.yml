@@ -65,6 +65,7 @@ functions:
           request:
             schema:
               application/json: ${file(create_request.json)}
+            passThrough: NEVER
   load_sample_data:
     handler: load_sample_data.load_data
   delete_sample_data:
