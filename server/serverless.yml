@@ -1,0 +1,130 @@
+service: two-cent-stories
+plugins:
+  - serverless-api-gateway-throttling
+  - serverless-python-requirements
+provider:
+  name: aws
+  runtime: python3.8
+  apiGateway:
+    minimumCompressionSize: 1024
+  logs:
+    restApi: true
+  tracing:
+    apiGateway: true
+#    lambda: true
+  memorySize: 128 # in MB
+  versionFunctions: false # TODO make true once it's prod
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - es:ESHttpPost
+        - es:ESHttpPut
+        - es:ESHttpDelete
+        - es:ESHttpGet
+        - es:DescribeElasticsearchDomain
+      Resource:
+        - { "Fn::GetAtt": ["SubmissionSearch", "DomainArn"] }
+        - { "Fn::Join": ["", ["Fn::GetAtt": ["SubmissionSearch", "DomainArn"], "/*"]] }
+
+
+stage: dev # TODO make this configurable
+region: us-east-1
+
+
+custom:
+  # Configures throttling settings for all http endpoints
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 1000
+    maxConcurrentRequests: 500
+  pythonRequirements:
+    dockerizePip: non-linux
+
+# TODO define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+package:
+  exclude:
+    venv/**
+
+functions:
+  submissions:
+    handler: handler.get_submissions # TODO add caching
+    events:
+      - http:
+          path: /submissions
+          method: get
+          cors: true
+  create_submission:
+    handler: handler.post_verified_submission # TODO make this post_submission after verification process works
+    events:
+      - http:
+          path: /submissions
+          method: post
+          cors: true
+          request:
+            schema:
+              application/json: ${file(create_request.json)}
+            passThrough: NEVER
+  create_unverified_submission: # TODO remove after verification process works
+    handler: handler.post_submission
+    events:
+      - http:
+          path: /submissions/unverified
+          method: post
+          cors: true
+          request:
+            schema:
+              application/json: ${file(create_request.json)}
+            passThrough: NEVER
+  load_sample_data:
+    handler: load_sample_data.load_data
+  delete_sample_data:
+    handler: load_sample_data.delete_data
+  list_data:
+    handler: load_sample_data.list_data
+
+# Examples for later
+#          request:
+#            parameters:
+#              querystrings:
+#                url: true
+#              headers:
+#                foo: false
+#              paths:
+#                bar: false`
+#      - http:
+#          path: posts/{id}
+#          method: get
+#          request:
+#            parameters:
+#              paths:
+#                id: true
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+
+
+resources:
+  Resources:
+    # TODO ADD WAF for rate limiting and such
+    SubmissionSearch:
+      Type: "AWS::Elasticsearch::Domain"
+      Properties:
+        ElasticsearchVersion: "7.1"
+        DomainName: "submissions-es-${self:provider.stage}"
+        ElasticsearchClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: "1"
+          ZoneAwarenessEnabled: false
+          InstanceType: "t2.small.elasticsearch"
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: "gp2"
+  #  Outputs:
+  #     NewOutput:
+  #       Description: "Description for the output"
+  #       Value: "Some output value"

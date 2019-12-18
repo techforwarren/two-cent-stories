@@ -1,10 +1,9 @@
 import React from 'react';
 import Name from './Name';
-import JoinUsQuad from './JoinUsQuad';
 import AddYourStory from './AddYourStory'
 
 export function NameBlock(props){
-
+    
 return(
     // set in grid
     
@@ -15,9 +14,8 @@ return(
             {index === 13 && <AddYourStory/>}
             </>
         ))}
-        
+
     </div>
-)
-}
+)}
 
 export default NameBlock;
