@@ -11,13 +11,27 @@ export function AddYourStory(props){
     const [validName, setValidName] = useState(false);
     const [validDebt, setValidDebt] = useState(false);
     const [validEmail, setValidEmail] = useState(false);
-
-    const isEnabled = validName && validDebt && validEmail;
+    const [validStory, setValidStory] = useState(true);
+    
+    const isEnabled = validName && validDebt && validEmail && validStory;
 
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
-
+    const [storyErrorMessage, setStoryErrorMessage] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
         
+    const postOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'applications/json'
+        },
+        body: JSON.stringify({
+            "name":nameInput,
+            "debt":Number(debtInput),
+            "story":storyInput,
+            "email":emailInput
+        })
+    };
+
     function toggleModal(){
         document.body.classList.toggle('noscroll');
         setIsModalVisible(!isModalVisible);
@@ -25,20 +39,17 @@ export function AddYourStory(props){
 
     function onSubmit(event){
         event.preventDefault();
-
+        console.log(postOptions);
         // send to db
+        //fetch(process.env.REACT_APP_API_ENDPOINT, postOptions);
 
         // show confirmation modal (your story will be posted after ...)
         toggleModal();
-        console.log(nameInput);
-        console.log(debtInput);
-        console.log(storyInput);
-        console.log(emailInput)
     }
     
     function cleanDebtInput(event){
         let cleanValue = event.target.value.replace(/\D*/g, '');
-        if(cleanValue.length > 0){
+        if(cleanValue > 0){
             setValidDebt(true);
             event.target.classList.remove('error')
         } else {
@@ -74,12 +85,24 @@ export function AddYourStory(props){
         </div>
         <div id='AYSstory'>
             <label htmlFor="story">Your Story</label>
-            <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)} maxLength="2000"></textarea>
+            <span className="errormessage">{storyErrorMessage}</span>
+            <textarea id="story" value={storyInput} 
+            onChange={(event) => {
+                setStoryInput(event.target.value)
+                if(event.target.value.length > 2000){
+                    setValidStory(false);
+                    setStoryErrorMessage("Max length is 2000 characters");
+                    event.target.classList.add('error');
+                } else {
+                    setValidStory(true);
+                    setStoryErrorMessage("");
+                    event.target.classList.remove('error');
+                }
+            }} maxLength="2001"></textarea>
         </div>
         <div id='AYSemail'>
             <label htmlFor="email">Email</label>
             <span className="errormessage">{emailErrorMessage}</span>
-
             <input id="email" value={emailInput} 
             onChange={(event) =>{
                 setEmailInput(event.target.value)
@@ -109,9 +132,10 @@ export function AddYourStory(props){
                 document.body.classList.toggle('noscroll');
                 setIsModalVisible(false)
             }}>
-                <Modal.Header>Thanks, {nameInput}!</Modal.Header>
+                <Modal.Header>Thanks for sharing your story, {nameInput}!</Modal.Header>
                 <Modal.Body> 
-                    you'll receive an email ...</Modal.Body>
+                Follow the confirmation link in your inbox to add your story to the rest of our two-cent stories.     
+                </Modal.Body>
                 <Modal.Footer>
                     <Modal.Footer.CloseBtn>Close</Modal.Footer.CloseBtn>
                 </Modal.Footer>
