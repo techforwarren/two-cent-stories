@@ -8,6 +8,14 @@ export function AddYourStory(props){
     const [storyInput, setStoryInput] = useState("");
     const [emailInput, setEmailInput] = useState("");
 
+    const [validName, setValidName] = useState(false);
+    const [validDebt, setValidDebt] = useState(false);
+    const [validEmail, setValidEmail] = useState(false);
+
+    const isEnabled = validName && validDebt && validEmail;
+
+    const [emailErrorMessage, setEmailErrorMessage] = useState("");
+
     const [isModalVisible, setIsModalVisible] = useState(false);
         
     function toggleModal(){
@@ -30,6 +38,13 @@ export function AddYourStory(props){
     
     function cleanDebtInput(event){
         let cleanValue = event.target.value.replace(/\D*/g, '');
+        if(cleanValue.length > 0){
+            setValidDebt(true);
+            event.target.classList.remove('error')
+        } else {
+            setValidDebt(false)
+            event.target.classList.add('error');
+        }
         setDebtInput(cleanValue);
     }
 
@@ -40,22 +55,54 @@ export function AddYourStory(props){
         <h3 id="AYSheader">ADD YOUR STORY</h3>
 
         <div id="AYSname">
-            <label htmlFor="name">Name</label>
-            <input id="name" value={nameInput} onChange={(event) => setNameInput(event.target.value)}></input>
+            <label htmlFor="name">First Name</label>
+            <input id="name" value={nameInput} onChange={(event) => {
+                if(event.target.value.length > 0){
+                    setValidName(true);
+                    event.target.classList.remove('error')
+                } else {
+                    setValidName(false);
+                    event.target.classList.add('error')
+                }
+                setNameInput(event.target.value)
+            }}>
+            </input>
         </div>
         <div id="AYSdebt">
             <label htmlFor="debt">Student Loan Debt</label>
-            <input id="debt" value={debtInput} onChange={cleanDebtInput} maxLength='7' minLength='1'></input>
+            <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput} ></input>
         </div>
         <div id='AYSstory'>
             <label htmlFor="story">Your Story</label>
-            <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)}></textarea>
+            <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)} maxLength="2000"></textarea>
         </div>
         <div id='AYSemail'>
             <label htmlFor="email">Email</label>
-            <input id="email" value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
+            <span className="errormessage">{emailErrorMessage}</span>
+
+            <input id="email" value={emailInput} 
+            onChange={(event) =>{
+                setEmailInput(event.target.value)
+                if(event.target.value.includes('@')){
+                    setValidEmail(true);
+                    setEmailErrorMessage("")
+                    event.target.classList.remove('error');
+                }
+            }}
+            onBlur={(event) => {
+                    if(event.target.value.includes('@')){
+                        setValidEmail(true);
+                        setEmailErrorMessage("")
+                        event.target.classList.remove('error');
+                    } else {
+                        setValidEmail(false);
+                        setEmailErrorMessage("Enter valid email")
+                        event.target.classList.add('error');
+                    }
+                }}>
+            </input>
         </div>
-        <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
+        <button id="AYSsubmit" disabled={!isEnabled} onClick={onSubmit}>Submit</button>
 
         { isModalVisible && (
             <Modal onModalClose={() => {
