@@ -231,6 +231,12 @@ label{
   border: rgb(182,27,40) 2px solid;
 }
 
+.errormessage{
+  position: relative;
+  left: 10px;
+  color: rgb(182,27,40);
+  font-size: 14px;
+}
   /* */
   
 .JoinUsQuad{
