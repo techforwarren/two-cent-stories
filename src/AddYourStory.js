@@ -41,7 +41,7 @@ export function AddYourStory(props){
         event.preventDefault();
         console.log(postOptions);
         // send to db
-        //fetch(process.env.REACT_APP_API_ENDPOINT, postOptions);
+        fetch(process.env.REACT_APP_API_ENDPOINT, postOptions);
 
         // show confirmation modal (your story will be posted after ...)
         toggleModal();
