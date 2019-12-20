@@ -3,6 +3,12 @@ from databases import ES_DB  # TODO fix import highlighting
 import datetime
 import secrets
 
+CORS_HEADERS = {
+        # TODO check request against a list of URLs and return one if it matches
+      'Access-Control-Allow-Origin': 'https://techforwarren.github.io/',
+      'Access-Control-Allow-Credentials': True
+    }
+
 def get_submissions(event, context):
     results = ES_DB.search(index="submissions", body={
         "query": {"exists": {"field": "verifiedDate"}},
@@ -24,6 +30,9 @@ def get_submissions(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            **CORS_HEADERS
+        },
         "body": json.dumps([{
             "submissions": submissions,
             "total_debt": total_debt,
@@ -72,6 +81,9 @@ def post_submission(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            **CORS_HEADERS
+        },
         "body": json.dumps({
             "id": response["_id"]
         })
@@ -86,6 +98,9 @@ def post_verified_submission(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            **CORS_HEADERS
+        },
         "body": json.dumps({
             "id": response["_id"]
         })

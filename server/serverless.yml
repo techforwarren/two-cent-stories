@@ -54,14 +54,38 @@ functions:
       - http:
           path: /submissions
           method: get
-          cors: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
   create_submission:
     handler: handler.post_verified_submission # TODO make this post_submission after verification process works
     events:
       - http:
           path: /submissions
           method: post
-          cors: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
           request:
             schema:
               application/json: ${file(create_request.json)}
@@ -72,7 +96,19 @@ functions:
       - http:
           path: /submissions/unverified
           method: post
-          cors: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
           request:
             schema:
               application/json: ${file(create_request.json)}
