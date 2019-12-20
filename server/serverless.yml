@@ -54,14 +54,12 @@ functions:
       - http:
           path: /submissions
           method: get
-          cors: true
   create_submission:
     handler: handler.post_verified_submission # TODO make this post_submission after verification process works
     events:
       - http:
           path: /submissions
           method: post
-          cors: true
           request:
             schema:
               application/json: ${file(create_request.json)}
@@ -72,7 +70,6 @@ functions:
       - http:
           path: /submissions/unverified
           method: post
-          cors: true
           request:
             schema:
               application/json: ${file(create_request.json)}
