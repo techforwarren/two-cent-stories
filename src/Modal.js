@@ -57,7 +57,7 @@ export default function Modal({ children, onModalClose }) {
           <div className="modal-header">
               {props.children}
               <button className="cross-btn" title="close modal" onClick={onModalClose}>
-                 &#10060;
+                 <span role="img" aria-label="close modal">&#10060;</span>
               </button>
           </div>
       );
