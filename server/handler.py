@@ -104,4 +104,8 @@ def post_verified_submission(event, context):
         "body": json.dumps({
             "id": response["_id"]
         })
-    }
+    }def verify_submission(event, context):
+    pass
+
+def delete_submission(event, context):
+    pass

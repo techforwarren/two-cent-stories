@@ -113,6 +113,31 @@ functions:
             schema:
               application/json: ${file(create_request.json)}
             passThrough: NEVER
+  verify_submission:
+    handler: handler.verify_submission
+    events:
+      - http:
+          path: /submissions/{submissionId}/verify
+          method: get
+          request:
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
   load_sample_data:
     handler: load_sample_data.load_data
   delete_sample_data:
