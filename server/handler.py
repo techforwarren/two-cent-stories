@@ -42,7 +42,7 @@ def get_submissions(event, context):
 
 def clean_email(email):
     parts = email.lower().split("@")
-    return parts[0].replace(".", "").replace("+", "") + "@" + parts[1]
+    return parts[0].replace(".", "").split("+")[0] + "@" + parts[1]
 
 
 def create_submission_record(submission):
@@ -52,7 +52,7 @@ def create_submission_record(submission):
         'debt': submission["debt"],
         'story': submission["story"],
         'email': submission["email"],
-        'email_clean': clean_email(submission["email"]),
+        'emailClean': clean_email(submission["email"]),
         "createdDate": datetime.datetime.now().isoformat(),
         "tokenVerify": secrets.token_urlsafe(16).replace("-", ""),
         "tokenDelete": secrets.token_urlsafe(16).replace("-", ""),
