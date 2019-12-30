@@ -16,6 +16,9 @@ CORS_HEADERS = {
 
 
 def get_submissions(event, context):
+    # TODO "include" parameter
+    # Comma separated list of specific submission ids to include
+    # Max length 3
     results = ES_DB.search(index="submissions", body={
         "query": {"exists": {"field": "verifiedDate"}},
         "_source": ["firstName", "debt", "story", "id", "verifiedDate"],

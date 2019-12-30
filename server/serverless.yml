@@ -56,10 +56,14 @@ package:
 functions:
   submissions:
     handler: handler.get_submissions # TODO add caching
+    handler: handler.get_submissions # TODO add caching https://github.com/DianaIonita/serverless-api-gateway-caching#readme
     events:
       - http:
           path: /submissions
           method: get
+          request:
+            querystrings:
+              include: false # optional # for ex, include=submission1,submission2
           cors:
             origins:
               - http://twocentstories.com
