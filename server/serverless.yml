@@ -40,8 +40,8 @@ region: us-east-1
 custom:
   # Configures throttling settings for all http endpoints
   apiGatewayThrottling:
-    maxRequestsPerSecond: 1000
-    maxConcurrentRequests: 500
+    maxRequestsPerSecond: 100
+    maxConcurrentRequests: 50
   pythonRequirements:
     dockerizePip: non-linux
 
@@ -79,6 +79,9 @@ functions:
       - http:
           path: /submissions
           method: post
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
           cors:
             origins:
               - http://twocentstories.com
@@ -102,6 +105,9 @@ functions:
       - http:
           path: /submissions/{submissionId}/verify
           method: get
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
           request:
             parameters:
               paths:
