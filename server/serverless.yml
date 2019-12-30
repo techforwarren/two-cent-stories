@@ -25,6 +25,12 @@ provider:
       Resource:
         - { "Fn::GetAtt": ["SubmissionSearch", "DomainArn"] }
         - { "Fn::Join": ["", ["Fn::GetAtt": ["SubmissionSearch", "DomainArn"], "/*"]] }
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource:
+        - "*"
 
 
 stage: dev # TODO make this configurable

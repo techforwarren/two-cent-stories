@@ -90,6 +90,7 @@ def send_email(submission_record, submission_id):
             'ToAddresses': [
                 # submission_record["email"],
                 "success@simulator.amazonses.com"
+                # "bounce@simulator.amazonses.com"
             ]
         },
         Message={
@@ -116,8 +117,11 @@ def post_submission(event, context):
 
     submission = json.loads(event["body"])
     record = create_submission_record(submission)
+
+    # TODO check that there isn't already a story from this email address
     response = ES_DB.index(index='submissions', body=record)
 
+    send_email(record, response["_id"])
 
     return {
         "statusCode": 200,
