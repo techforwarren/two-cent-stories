@@ -2,12 +2,18 @@ import json
 from databases import ES_DB  # TODO fix import highlighting
 import datetime
 import secrets
+import boto3
+from os import path
+
+# TODO make configurable
+HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
 
 CORS_HEADERS = {
-        # TODO check request against a list of URLs and return one if it matches
-      'Access-Control-Allow-Origin': 'https://techforwarren.github.io/',
-      'Access-Control-Allow-Credentials': True
-    }
+    # TODO check request against a list of URLs and return one if it matches
+    'Access-Control-Allow-Origin': 'https://techforwarren.github.io',
+    'Access-Control-Allow-Credentials': True
+}
+
 
 def get_submissions(event, context):
     results = ES_DB.search(index="submissions", body={
@@ -67,6 +73,43 @@ def mark_verified(submission):
     }
 
 
+def send_email(submission_record, submission_id):
+    client = boto3.client('ses')
+
+    verify_url = path.join(HOST, f"submissions/{submission_id}/verify") + f"?token={submission_record['tokenVerify']}"
+    delete_url = path.join(HOST, f"submissions/{submission_id}/delete") + f"?token={submission_record['tokenDelete']}"
+    email_body = f"<a target='_blank' href='{verify_url}'>Verify Your Story</a>" \
+                 f"<br>" \
+                 f"<br>" \
+                 f"<a target='_blank' href='{delete_url}'>Delete Your Story</a>"
+
+    print(email_body)
+    response = client.send_email(
+        Source='noreply@twocentstories.com', # TODO make this not no-reply?
+        Destination={
+            'ToAddresses': [
+                # submission_record["email"],
+                "success@simulator.amazonses.com"
+            ]
+        },
+        Message={
+            'Subject': {
+                'Data': 'Confirm Your Story'
+            },
+            'Body': {
+                # 'Text': {
+                #     'Data': f'string'
+                # },
+                'Html': {
+                    'Data': email_body
+                }
+            }
+        },
+        ReturnPath='complaints@twocentstories.com',
+        # SourceArn='string',
+        # ReturnPathArn='string',
+        # ConfigurationSetName='string'
+    )
 def post_submission(event, context):
     print(event)
     # TODO check something in the cookie to help defeat trolls
@@ -75,9 +118,6 @@ def post_submission(event, context):
     record = create_submission_record(submission)
     response = ES_DB.index(index='submissions', body=record)
 
-    print(response)
-
-    # TODO send an email!
 
     return {
         "statusCode": 200,
@@ -104,8 +144,80 @@ def post_verified_submission(event, context):
         "body": json.dumps({
             "id": response["_id"]
         })
-    }def verify_submission(event, context):
-    pass
+    }
+
+
+def verify_submission(event, context):
+    submission_id = event["pathParameters"]["submissionId"]
+    if not submission_id:
+        return {
+            "statusCode": 400,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Submission id missing"
+        }
+    token = event.get("queryStringParameters", {}).get("token")
+    if not token:
+        return {
+            "statusCode": 400,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Token missing"
+        }
+
+    submission = ES_DB.get(index="submissions", id=submission_id)
+
+    if not submission:
+        return {
+            "statusCode": 404,
+            "headers": {
+                **CORS_HEADERS
+            }
+        }
+
+    verify_token = submission["_source"]["tokenVerify"]
+
+    if not verify_token:
+        return {
+            "statusCode": 200,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Your story has already been verified! Thank you :)"
+        }
+
+    if token != verify_token:
+        return {
+            "statusCode": 403,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": f"Token: {token} did not match"
+        }
+
+    # mark story is verified
+    ES_DB.update(index='submissions', id=submission_id,
+                 body={"doc": {"tokenVerify": None,
+                               "verifiedDate": datetime.datetime.now().isoformat()}})
+
+    return {
+        "statusCode": 200,
+        "headers": {
+            **CORS_HEADERS
+        },
+        "body": "Your story has been verified! Thank you :)"
+    }
+
 
 def delete_submission(event, context):
-    pass
+    # TODO
+    return {
+        "statusCode": 200,
+        "headers": {
+            **CORS_HEADERS
+        },
+        "body": "Your story has been deleted!"
+    }
+

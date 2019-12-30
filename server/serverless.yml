@@ -68,33 +68,10 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: false
   create_submission:
-    handler: handler.post_verified_submission # TODO make this post_submission after verification process works
-    events:
-      - http:
-          path: /submissions
-          method: post
-          cors:
-            origins:
-              - http://twocentstories.com
-              - https://twocentstories.com
-              - https://techforwarren.github.io
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: false
-          request:
-            schema:
-              application/json: ${file(create_request.json)}
-            passThrough: NEVER
-  create_unverified_submission: # TODO remove after verification process works
     handler: handler.post_submission
     events:
       - http:
-          path: /submissions/unverified
+          path: /submissions
           method: post
           cors:
             origins:
