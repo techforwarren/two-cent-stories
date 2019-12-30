@@ -127,6 +127,34 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
             allowCredentials: false
+  delete_submission:
+    handler: handler.delete_submission
+    events:
+      - http:
+          path: /submissions/{submissionId}/delete
+          method: get
+          throttling:
+            maxRequestsPerSecond: 1
+            maxConcurrentRequests: 2
+          request:
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
   load_sample_data:
     handler: load_sample_data.load_data
   delete_sample_data:

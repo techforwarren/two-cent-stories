@@ -216,7 +216,57 @@ def verify_submission(event, context):
 
 
 def delete_submission(event, context):
-    # TODO
+    submission_id = event["pathParameters"]["submissionId"]
+    if not submission_id:
+        return {
+            "statusCode": 400,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Submission id missing"
+        }
+    token = event.get("queryStringParameters", {}).get("token")
+    if not token:
+        return {
+            "statusCode": 400,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Token missing"
+        }
+
+    submission = ES_DB.get(index="submissions", id=submission_id)
+
+    if not submission:
+        return {
+            "statusCode": 404,
+            "headers": {
+                **CORS_HEADERS
+            }
+        }
+
+    delete_token = submission["_source"]["tokenDelete"]
+
+    if not delete_token:
+        return {
+            "statusCode": 200,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": "Your story has already been deleted! Thank you :)"
+        }
+
+    if token != delete_token:
+        return {
+            "statusCode": 403,
+            "headers": {
+                **CORS_HEADERS
+            },
+            "body": f"Token: {token} did not match"
+        }
+
+    ES_DB.delete(index='submissions', id=submission_id)
+
     return {
         "statusCode": 200,
         "headers": {
