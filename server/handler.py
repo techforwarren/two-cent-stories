@@ -117,7 +117,19 @@ def post_submission(event, context):
     submission = json.loads(event["body"])
     record = create_submission_record(submission)
 
-    # TODO check that there isn't already a story from this email address
+    # check that there isn't already a story from this email address
+    existing_stories = ES_DB.count(
+        index="submissions",
+        body={"query": {"match": {"emailClean": record["emailClean"]}},},
+    )
+
+    if existing_stories["count"]:
+        return {
+            "statusCode": 409,
+            "headers": {**CORS_HEADERS},
+            "body": "Your story has already been submitted. Please check your email :)",
+        }
+
     response = ES_DB.index(index="submissions", body=record)
 
     send_email(record, response["_id"])
