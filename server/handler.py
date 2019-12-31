@@ -91,8 +91,8 @@ def send_email(submission_record, submission_id):
         Source='noreply@twocentstories.com', # TODO make this not no-reply?
         Destination={
             'ToAddresses': [
-                # submission_record["email"],
-                "success@simulator.amazonses.com"
+                submission_record["email"],
+                # "success@simulator.amazonses.com"
                 # "bounce@simulator.amazonses.com"
             ]
         },
