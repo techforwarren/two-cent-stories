@@ -2,6 +2,7 @@ service: two-cent-stories
 plugins:
   - serverless-api-gateway-throttling
   - serverless-python-requirements
+  - serverless-api-gateway-caching
 provider:
   name: aws
   runtime: python3.8
@@ -11,9 +12,9 @@ provider:
     restApi: true
   tracing:
     apiGateway: true
-#    lambda: true
+    lambda: true
   memorySize: 128 # in MB
-  versionFunctions: false # TODO make true once it's prod
+  versionFunctions: ${self:custom.versionFunctions.${self:provider.stage}}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -25,6 +26,12 @@ provider:
       Resource:
         - { "Fn::GetAtt": ["SubmissionSearch", "DomainArn"] }
         - { "Fn::Join": ["", ["Fn::GetAtt": ["SubmissionSearch", "DomainArn"], "/*"]] }
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource:
+        - "*"
 
 
 stage: dev # TODO make this configurable
@@ -34,10 +41,21 @@ region: us-east-1
 custom:
   # Configures throttling settings for all http endpoints
   apiGatewayThrottling:
-    maxRequestsPerSecond: 1000
-    maxConcurrentRequests: 500
+    maxRequestsPerSecond: 100
+    maxConcurrentRequests: 50
   pythonRequirements:
     dockerizePip: non-linux
+  cacheEnabled:
+    dev: false
+    prod: true
+  versionFunctions:
+    dev: false
+    prod: true
+  apiGatewayCaching:
+    enabled: ${self:custom.cacheEnabled.${self:provider.stage}}
+    clusterSize: '0.5'
+    ttlInSeconds: 90
+    dataEncrypted: false
 
 # TODO define service wide environment variables here
 #  environment:
@@ -49,11 +67,20 @@ package:
 
 functions:
   submissions:
-    handler: handler.get_submissions # TODO add caching
+    handler: handler.get_submissions # TODO add caching https://github.com/DianaIonita/serverless-api-gateway-caching#readme
     events:
       - http:
           path: /submissions
           method: get
+          request:
+            querystrings:
+              include: false # optional # for ex, include=submission1,submission2
+              limit: false # optional
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.querystring.include
+              - name: request.querystring.limit
           cors:
             origins:
               - http://twocentstories.com
@@ -68,11 +95,14 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: false
   create_submission:
-    handler: handler.post_verified_submission # TODO make this post_submission after verification process works
+    handler: handler.post_submission
     events:
       - http:
           path: /submissions
           method: post
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
           cors:
             origins:
               - http://twocentstories.com
@@ -90,12 +120,21 @@ functions:
             schema:
               application/json: ${file(create_request.json)}
             passThrough: NEVER
-  create_unverified_submission: # TODO remove after verification process works
-    handler: handler.post_submission
+  verify_submission:
+    handler: handler.verify_submission
     events:
       - http:
-          path: /submissions/unverified
-          method: post
+          path: /submissions/{submissionId}/verify
+          method: get
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
+          request:
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
           cors:
             origins:
               - http://twocentstories.com
@@ -109,10 +148,34 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
             allowCredentials: false
+  delete_submission:
+    handler: handler.delete_submission
+    events:
+      - http:
+          path: /submissions/{submissionId}/delete
+          method: get
+          throttling:
+            maxRequestsPerSecond: 1
+            maxConcurrentRequests: 2
           request:
-            schema:
-              application/json: ${file(create_request.json)}
-            passThrough: NEVER
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
   load_sample_data:
     handler: load_sample_data.load_data
   delete_sample_data:
@@ -128,14 +191,7 @@ functions:
 #              headers:
 #                foo: false
 #              paths:
-#                bar: false`
-#      - http:
-#          path: posts/{id}
-#          method: get
-#          request:
-#            parameters:
-#              paths:
-#                id: true
+#                bar: false
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
