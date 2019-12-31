@@ -160,7 +160,7 @@ def post_submission(event, context):
     # check that there isn't already a story from this email address
     existing_stories = ES_DB.count(
         index="submissions",
-        body={"query": {"match": {"emailClean": record["emailClean"]}}},
+        body={"query": {"match": {"emailClean.keyword": record["emailClean"]}}},
     )
 
     if existing_stories["count"]:
