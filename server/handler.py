@@ -34,7 +34,7 @@ def get_submissions(event, context):
         limit = int(query_params.get("limit"))
         assert 0 < limit < 200
     except (ValueError, AssertionError, TypeError):
-        limit = 200
+        limit = 90
 
     results = ES_DB.search(
         index="submissions",
