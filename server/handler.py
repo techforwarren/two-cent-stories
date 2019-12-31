@@ -111,7 +111,10 @@ def send_email(submission_record, submission_id):
 
 
 def post_submission(event, context):
+    print("event")
     print(event)
+    print("context")
+    print(context)
     # TODO check something in the cookie to help defeat trolls
 
     submission = json.loads(event["body"])
