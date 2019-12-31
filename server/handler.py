@@ -10,6 +10,7 @@ from databases import ES_DB
 
 # TODO make configurable
 HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
+UI_HOST = "https://techforwarren.github.io/two-cent-stories/"
 
 CORS_HEADERS = {
     # TODO check request against a list of URLs and return one if it matches
@@ -123,7 +124,7 @@ def post_submission(event, context):
     # check that there isn't already a story from this email address
     existing_stories = ES_DB.count(
         index="submissions",
-        body={"query": {"match": {"emailClean": record["emailClean"]}},},
+        body={"query": {"match": {"emailClean": record["emailClean"]}}},
     )
 
     if existing_stories["count"]:
@@ -180,10 +181,12 @@ def verify_submission(event, context):
 
     verify_token = submission["_source"]["tokenVerify"]
 
+    redirect_url = f"{UI_HOST}?verified={submission_id}"
+
     if not verify_token:
         return {
-            "statusCode": 200,
-            "headers": {**CORS_HEADERS},
+            "statusCode": 302,
+            "headers": {**CORS_HEADERS, "Location": redirect_url},
             "body": "Your story has already been verified! Thank you :)",
         }
 
@@ -207,8 +210,8 @@ def verify_submission(event, context):
     )
 
     return {
-        "statusCode": 200,
-        "headers": {**CORS_HEADERS},
+        "statusCode": 302,
+        "headers": {**CORS_HEADERS, "Location": redirect_url},
         "body": "Your story has been verified! Thank you :)",
     }
 
