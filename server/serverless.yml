@@ -12,7 +12,7 @@ provider:
     restApi: true
   tracing:
     apiGateway: true
-#    lambda: true
+    lambda: true
   memorySize: 128 # in MB
   versionFunctions: ${self:custom.versionFunctions.${self:provider.stage}}
   iamRoleStatements:
