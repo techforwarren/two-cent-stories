@@ -2,6 +2,7 @@ service: two-cent-stories
 plugins:
   - serverless-api-gateway-throttling
   - serverless-python-requirements
+  - serverless-api-gateway-caching
 provider:
   name: aws
   runtime: python3.8
@@ -44,6 +45,14 @@ custom:
     maxConcurrentRequests: 50
   pythonRequirements:
     dockerizePip: non-linux
+  cacheEnabled:
+    dev: true
+    prod: true
+  apiGatewayCaching:
+    enabled: ${self:custom.cacheEnabled.${self:provider.stage}}
+    clusterSize: '0.5'
+    ttlInSeconds: 90
+    dataEncrypted: false
 
 # TODO define service wide environment variables here
 #  environment:
@@ -64,6 +73,11 @@ functions:
             querystrings:
               include: false # optional # for ex, include=submission1,submission2
               limit: false # optional
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.querystring.include
+              - name: request.querystring.limit
           cors:
             origins:
               - http://twocentstories.com
@@ -174,14 +188,7 @@ functions:
 #              headers:
 #                foo: false
 #              paths:
-#                bar: false`
-#      - http:
-#          path: posts/{id}
-#          method: get
-#          request:
-#            parameters:
-#              paths:
-#                id: true
+#                bar: false
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
