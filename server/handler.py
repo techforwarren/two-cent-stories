@@ -1,10 +1,12 @@
-import json
-from databases import ES_DB  # TODO fix import highlighting
 import datetime
+import json
 import secrets
-import boto3
 from os import path
+
+import boto3
 from elasticsearch import NotFoundError
+
+from databases import ES_DB
 
 # TODO make configurable
 HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
@@ -115,6 +117,8 @@ def send_email(submission_record, submission_id):
         # ReturnPathArn='string',
         # ConfigurationSetName='string'
     )
+
+    print(response)
 
 
 def post_submission(event, context):
