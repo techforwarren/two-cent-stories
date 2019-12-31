@@ -22,6 +22,20 @@ CORS_HEADERS = {
 def get_submissions(event, context):
     fields_to_output = ["firstName", "debt", "story", "verifiedDate"]
 
+    query_params = event.get("queryStringParameters") or {}
+
+    # Comma separated list of specific submission ids to include
+    # Max length 3
+    include = query_params.get("include")
+    if include:
+        include = include.split(",")[:3]
+
+    try:
+        limit = int(query_params.get("limit"))
+        assert 0 < limit < 200
+    except (ValueError, AssertionError, TypeError):
+        limit = 200
+
     results = ES_DB.search(
         index="submissions",
         body={
@@ -29,7 +43,7 @@ def get_submissions(event, context):
             "_source": fields_to_output,
             "sort": [{"verifiedDate": {"order": "desc"}}],
             "aggs": {"total_debt": {"sum": {"field": "debt"}}},
-            "size": 200,
+            "size": limit,
         },
     )
 
@@ -37,20 +51,11 @@ def get_submissions(event, context):
 
     submissions = [submission["_source"] for submission in results["hits"]["hits"]]
 
-    # "include" parameter
-    # Comma separated list of specific submission ids to include
-    # Max length 3
-    include_query_param = (event.get("queryStringParameters") or {}).get("include")
-
-    if include_query_param:
-        submission_ids_to_include = (
-            (event.get("queryStringParameters") or {}).get("include", "").split(",")[:3]
-        )
-
+    if include:
         existing_submission_ids = {
             submission["_id"] for submission in results["hits"]["hits"]
         }
-        for submission_id in submission_ids_to_include:
+        for submission_id in include:
             if submission_id not in existing_submission_ids:
                 try:
                     submission = ES_DB.get(index="submissions", id=submission_id)
@@ -58,6 +63,7 @@ def get_submissions(event, context):
                     continue
 
                 existing_submission_ids.add(submission_id)
+
                 # add submission to what is returned
                 submissions.insert(
                     0,

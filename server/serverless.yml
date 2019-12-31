@@ -63,6 +63,7 @@ functions:
           request:
             querystrings:
               include: false # optional # for ex, include=submission1,submission2
+              limit: false # optional
           cors:
             origins:
               - http://twocentstories.com
