@@ -96,21 +96,10 @@ def send_email(submission_record, submission_id):
     print(email_body)
     response = client.send_email(
         Source="noreply@twocentstories.com",  # TODO make this not no-reply?
-        Destination={
-            "ToAddresses": [
-                submission_record["email"],
-                # "success@simulator.amazonses.com"
-                # "bounce@simulator.amazonses.com"
-            ]
-        },
+        Destination={"ToAddresses": [submission_record["email"],]},
         Message={
             "Subject": {"Data": "Confirm Your Story"},
-            "Body": {
-                # 'Text': {
-                #     'Data': f'string'
-                # },
-                "Html": {"Data": email_body}
-            },
+            "Body": {"Html": {"Data": email_body}},
         },
         ReturnPath="complaints@twocentstories.com",
         # SourceArn='string',
