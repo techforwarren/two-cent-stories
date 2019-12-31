@@ -14,7 +14,7 @@ provider:
     apiGateway: true
 #    lambda: true
   memorySize: 128 # in MB
-  versionFunctions: false # TODO make true once it's prod
+  versionFunctions: ${self:custom.versionFunctions.${self:provider.stage}}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -47,6 +47,9 @@ custom:
     dockerizePip: non-linux
   cacheEnabled:
     dev: true
+    prod: true
+  versionFunctions:
+    dev: false
     prod: true
   apiGatewayCaching:
     enabled: ${self:custom.cacheEnabled.${self:provider.stage}}
