@@ -4,6 +4,7 @@ import datetime
 import secrets
 import boto3
 from os import path
+from elasticsearch import NotFoundError
 
 # TODO make configurable
 HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
@@ -174,9 +175,11 @@ def verify_submission(event, context):
             "body": "Token missing"
         }
 
-    submission = ES_DB.get(index="submissions", id=submission_id)
 
     if not submission:
+    try:
+        submission = ES_DB.get(index="submissions", id=submission_id)
+    except NotFoundError:
         return {
             "statusCode": 404,
             "headers": {
@@ -238,9 +241,9 @@ def delete_submission(event, context):
             "body": "Token missing"
         }
 
-    submission = ES_DB.get(index="submissions", id=submission_id)
-
-    if not submission:
+    try:
+        submission = ES_DB.get(index="submissions", id=submission_id)
+    except NotFoundError:
         return {
             "statusCode": 404,
             "headers": {
