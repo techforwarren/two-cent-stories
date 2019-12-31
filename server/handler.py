@@ -172,7 +172,11 @@ def verify_submission(event, context):
     try:
         submission = ES_DB.get(index="submissions", id=submission_id)
     except NotFoundError:
-        return {"statusCode": 404, "headers": {**CORS_HEADERS}}
+        return {
+            "statusCode": 404,
+            "headers": {**CORS_HEADERS},
+            "body": "Story not found",
+        }
 
     verify_token = submission["_source"]["tokenVerify"]
 
@@ -224,7 +228,11 @@ def delete_submission(event, context):
     try:
         submission = ES_DB.get(index="submissions", id=submission_id)
     except NotFoundError:
-        return {"statusCode": 404, "headers": {**CORS_HEADERS}}
+        return {
+            "statusCode": 404,
+            "headers": {**CORS_HEADERS},
+            "body": "Story not found. Perhaps it has already been deleted!",
+        }
 
     delete_token = submission["_source"]["tokenDelete"]
 
