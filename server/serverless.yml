@@ -46,7 +46,7 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
   cacheEnabled:
-    dev: true
+    dev: false
     prod: true
   versionFunctions:
     dev: false
