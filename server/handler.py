@@ -82,10 +82,12 @@ def send_email(submission_record, submission_id):
 
     verify_url = path.join(HOST, f"submissions/{submission_id}/verify") + f"?token={submission_record['tokenVerify']}"
     delete_url = path.join(HOST, f"submissions/{submission_id}/delete") + f"?token={submission_record['tokenDelete']}"
-    email_body = f"<a target='_blank' href='{verify_url}'>Verify Your Story</a>" \
+    email_body = f"<body>" \
+                 f"<a target='_blank' href='{verify_url}'>Verify Your Story</a>" \
                  f"<br>" \
                  f"<br>" \
-                 f"<a target='_blank' href='{delete_url}'>Delete Your Story</a>"
+                 f"<a target='_blank' href='{delete_url}'>Delete Your Story</a>" \
+                 f"</body>"
 
     print(email_body)
     response = client.send_email(
@@ -176,7 +178,6 @@ def verify_submission(event, context):
         }
 
 
-    if not submission:
     try:
         submission = ES_DB.get(index="submissions", id=submission_id)
     except NotFoundError:
