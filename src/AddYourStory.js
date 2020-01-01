@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Modal from './Modal';
 
 export function AddYourStory(props){
@@ -18,6 +18,8 @@ export function AddYourStory(props){
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [storyErrorMessage, setStoryErrorMessage] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [hasSubmit, setHasSubmit] = useState(false);
         
     const postOptions = {
         method: 'POST',
@@ -41,11 +43,25 @@ export function AddYourStory(props){
         event.preventDefault();
         console.log(postOptions);
         // send to db
-        fetch(process.env.REACT_APP_API_ENDPOINT, postOptions);
+        fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
+            .then((res) => {
+                if(res.ok){
+                    setHasSubmit(true);
+                } 
+                else if(res.status == "409") {
+                    document.getElementById("email").classList.add('error');
+                    setEmailErrorMessage("This email address is already in use")
+                }
+            });
 
-        // show confirmation modal (your story will be posted after ...)
-        toggleModal();
+        //toggleModal();
     }
+
+    useEffect(() => {
+        if(hasSubmit === true){
+            console.log('has submit')
+        }
+    }, [hasSubmit]);
     
     function cleanDebtInput(event){
         let cleanValue = event.target.value.replace(/\D*/g, '');
@@ -61,73 +77,97 @@ export function AddYourStory(props){
 
     
     return(
-    <div className="AddYourStory" onSubmit={onSubmit}> 
+    <> 
+        {hasSubmit === false && 
+        <div className="AddYourStory" onSubmit={onSubmit}>
+            <h3 id="AYSheader">ADD YOUR STORY</h3>
+       
+            <div id="AYSname">
+                    <label htmlFor="name">First Name</label>
+                    <input id="name" value={nameInput} onChange={(event) => {
+                        if(event.target.value.length > 0){
+                            setValidName(true);
+                            event.target.classList.remove('error')
+                        } else {
+                            setValidName(false);
+                            event.target.classList.add('error')
+                        }
+                        setNameInput(event.target.value)
+                    }}>
+                    </input>
+                </div>
+                <div id="AYSdebt">
+                    <label htmlFor="debt">Student Loan Debt</label>
+                    <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput} ></input>
+                </div>
+                <div id='AYSstory'>
+                    <label htmlFor="story">Your Story</label>
+                    <span className="errormessage">{storyErrorMessage}</span>
+                    <textarea id="story" value={storyInput} 
+                    onChange={(event) => {
+                        setStoryInput(event.target.value)
+                        if(event.target.value.length > 2000){
+                            setValidStory(false);
+                            setStoryErrorMessage("Max length is 2000 characters");
+                            event.target.classList.add('error');
+                        } else {
+                            setValidStory(true);
+                            setStoryErrorMessage("");
+                            event.target.classList.remove('error');
+                        }
+                    }} maxLength="2001"></textarea>
+                </div>
+                <div id='AYSemail'>
+                    <label htmlFor="email">Email</label>
+                    <span className="errormessage">{emailErrorMessage}</span>
+                    <input id="email" value={emailInput} 
+                    onChange={(event) =>{
+                        setEmailInput(event.target.value)
+                        if(event.target.value.includes('@')){
+                            setValidEmail(true);
+                            setEmailErrorMessage("")
+                            event.target.classList.remove('error');
+                        }
+                    }}
+                    onBlur={(event) => {
+                            if(event.target.value.includes('@')){
+                                setValidEmail(true);
+                                setEmailErrorMessage("")
+                                event.target.classList.remove('error');
+                            } else {
+                                setValidEmail(false);
+                                setEmailErrorMessage("Enter valid email")
+                                event.target.classList.add('error');
+                            }
+                        }}>
+                    </input>
+                </div>
+                <button id="AYSsubmit" disabled={!isEnabled} onClick={onSubmit}>Submit</button>
+        </div>
+        }
 
-        <h3 id="AYSheader">ADD YOUR STORY</h3>
+        {hasSubmit === true &&
+            <div className="storyAdded">
+                <div id="SAheader">
+                    <h3>Thanks for sharing your story, {nameInput}</h3>
+                </div>
+                <div id="SAmessage">
+                    <p>Check your email!</p>
+                    <p>We will post your story after you verify it.</p>
+                </div>
+            </div>
+        }
 
-        <div id="AYSname">
-            <label htmlFor="name">First Name</label>
-            <input id="name" value={nameInput} onChange={(event) => {
-                if(event.target.value.length > 0){
-                    setValidName(true);
-                    event.target.classList.remove('error')
-                } else {
-                    setValidName(false);
-                    event.target.classList.add('error')
-                }
-                setNameInput(event.target.value)
-            }}>
-            </input>
-        </div>
-        <div id="AYSdebt">
-            <label htmlFor="debt">Student Loan Debt</label>
-            <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput} ></input>
-        </div>
-        <div id='AYSstory'>
-            <label htmlFor="story">Your Story</label>
-            <span className="errormessage">{storyErrorMessage}</span>
-            <textarea id="story" value={storyInput} 
-            onChange={(event) => {
-                setStoryInput(event.target.value)
-                if(event.target.value.length > 2000){
-                    setValidStory(false);
-                    setStoryErrorMessage("Max length is 2000 characters");
-                    event.target.classList.add('error');
-                } else {
-                    setValidStory(true);
-                    setStoryErrorMessage("");
-                    event.target.classList.remove('error');
-                }
-            }} maxLength="2001"></textarea>
-        </div>
-        <div id='AYSemail'>
-            <label htmlFor="email">Email</label>
-            <span className="errormessage">{emailErrorMessage}</span>
-            <input id="email" value={emailInput} 
-            onChange={(event) =>{
-                setEmailInput(event.target.value)
-                if(event.target.value.includes('@')){
-                    setValidEmail(true);
-                    setEmailErrorMessage("")
-                    event.target.classList.remove('error');
-                }
-            }}
-            onBlur={(event) => {
-                    if(event.target.value.includes('@')){
-                        setValidEmail(true);
-                        setEmailErrorMessage("")
-                        event.target.classList.remove('error');
-                    } else {
-                        setValidEmail(false);
-                        setEmailErrorMessage("Enter valid email")
-                        event.target.classList.add('error');
-                    }
-                }}>
-            </input>
-        </div>
-        <button id="AYSsubmit" disabled={!isEnabled} onClick={onSubmit}>Submit</button>
+        
+    </>
+    );
+}
 
-        { isModalVisible && (
+export default AddYourStory;
+
+
+/*
+{ isModalVisible && (
             <Modal onModalClose={() => {
                 document.body.classList.toggle('noscroll');
                 setIsModalVisible(false)
@@ -141,8 +181,4 @@ export function AddYourStory(props){
                 </Modal.Footer>
             </Modal>
         )}
-    </div>
-    );
-}
-
-export default AddYourStory;
+*/
