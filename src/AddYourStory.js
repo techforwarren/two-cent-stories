@@ -34,7 +34,6 @@ export function AddYourStory(props){
 
     function onSubmit(event){
         event.preventDefault();
-        console.log(postOptions);
         // if all required fields are full send to db 
         if(isEnabled){
             fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
@@ -48,18 +47,14 @@ export function AddYourStory(props){
                 }
             });
         } else {
-            console.log("nope")
             // check fields and set errors
             if(!validName){
-                console.log('invalid name')
                 document.getElementById("name").classList.add('error');
             }
             if(!validDebt){
-                console.log('invalid debt')
                 document.getElementById("debt").classList.add('error');
             }
             if(!validEmail){
-                console.log('invalid email')
                 document.getElementById("email").classList.add('error');
 
             }
