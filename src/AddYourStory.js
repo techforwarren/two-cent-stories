@@ -43,17 +43,19 @@ export function AddYourStory(props){
         event.preventDefault();
         console.log(postOptions);
         // send to db
+        
         fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
             .then((res) => {
                 if(res.ok){
                     setHasSubmit(true);
                 } 
-                else if(res.status == "409") {
+                else if(res.status === 409) {
+                    
                     document.getElementById("email").classList.add('error');
                     setEmailErrorMessage("This email address is already in use")
                 }
             });
-
+        
         //toggleModal();
     }
 
@@ -79,9 +81,9 @@ export function AddYourStory(props){
     return(
     <> 
         {hasSubmit === false && 
-        <div className="AddYourStory" onSubmit={onSubmit}>
+        <form className="AddYourStory" onSubmit={onSubmit}>
             <h3 id="AYSheader">ADD YOUR STORY</h3>
-       
+            
             <div id="AYSname">
                     <label htmlFor="name">First Name</label>
                     <input id="name" value={nameInput} onChange={(event) => {
@@ -143,7 +145,7 @@ export function AddYourStory(props){
                     </input>
                 </div>
                 <button id="AYSsubmit" disabled={!isEnabled} onClick={onSubmit}>Submit</button>
-        </div>
+        </form>
         }
 
         {hasSubmit === true &&
