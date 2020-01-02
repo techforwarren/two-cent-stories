@@ -156,8 +156,7 @@ export function AddYourStory(props){
                     <h3>Thanks for sharing your story, {nameInput}</h3>
                 </div>
                 <div id="SAmessage">
-                    <p>Check your email!</p>
-                    <p>We will post your story after you verify it.</p>
+                    <p>Check your email! We will post your story after you verify it.</p>
                 </div>
             </div>
         }

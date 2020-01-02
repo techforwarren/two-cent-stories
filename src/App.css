@@ -272,7 +272,8 @@ label{
 
 #SAmessage{
   grid-area: message;
-  line-height: 10px;
+  padding-top: 4px;
+  line-height: 21px;
 }
 
 #SAlinks{
