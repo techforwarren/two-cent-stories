@@ -34,37 +34,41 @@ export function AddYourStory(props){
         })
     };
 
-    function toggleModal(){
-        document.body.classList.toggle('noscroll');
-        setIsModalVisible(!isModalVisible);
-    }
-
     function onSubmit(event){
         event.preventDefault();
         console.log(postOptions);
-        // send to db
-        
-        fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
+        // if all required fields are full send to db 
+        if(isEnabled){
+            fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
             .then((res) => {
                 if(res.ok){
                     setHasSubmit(true);
                 } 
                 else if(res.status === 409) {
-                    
                     document.getElementById("email").classList.add('error');
                     setEmailErrorMessage("This email address is already in use")
                 }
             });
-        
-        //toggleModal();
+        } else {
+            console.log("nope")
+            // check fields and set errors
+            if(!validName){
+                console.log('invalid name')
+                document.getElementById("name").classList.add('error');
+            }
+            if(!validDebt){
+                console.log('invalid debt')
+                document.getElementById("debt").classList.add('error');
+            }
+            if(!validEmail){
+                console.log('invalid email')
+                document.getElementById("email").classList.add('error');
+
+            }
+            
+        }
     }
 
-    useEffect(() => {
-        if(hasSubmit === true){
-            console.log('has submit')
-        }
-    }, [hasSubmit]);
-    
     function cleanDebtInput(event){
         let cleanValue = event.target.value.replace(/\D*/g, '');
         if(cleanValue > 0){
@@ -100,7 +104,7 @@ export function AddYourStory(props){
                 </div>
                 <div id="AYSdebt">
                     <label htmlFor="debt">Student Loan Debt</label>
-                    <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput} ></input>
+                    <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput}></input>
                 </div>
                 <div id='AYSstory'>
                     <label htmlFor="story">Your Story</label>
@@ -144,7 +148,7 @@ export function AddYourStory(props){
                         }}>
                     </input>
                 </div>
-                <button id="AYSsubmit" disabled={!isEnabled} onClick={onSubmit}>Submit</button>
+                <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
         </form>
         }
 
@@ -166,21 +170,3 @@ export function AddYourStory(props){
 }
 
 export default AddYourStory;
-
-
-/*
-{ isModalVisible && (
-            <Modal onModalClose={() => {
-                document.body.classList.toggle('noscroll');
-                setIsModalVisible(false)
-            }}>
-                <Modal.Header>Thanks for sharing your story, {nameInput}!</Modal.Header>
-                <Modal.Body> 
-                Follow the confirmation link in your inbox to add your story to the rest of our two-cent stories.     
-                </Modal.Body>
-                <Modal.Footer>
-                    <Modal.Footer.CloseBtn>Close</Modal.Footer.CloseBtn>
-                </Modal.Footer>
-            </Modal>
-        )}
-*/
