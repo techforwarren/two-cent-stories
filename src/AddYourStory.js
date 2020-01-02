@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import Modal from './Modal';
+import React, { useState } from 'react';
 
 export function AddYourStory(props){
    
@@ -17,7 +16,6 @@ export function AddYourStory(props){
 
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [storyErrorMessage, setStoryErrorMessage] = useState("");
-    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const [hasSubmit, setHasSubmit] = useState(false);
         
