@@ -16,7 +16,6 @@ function App() {
       .then((data) =>{
         setTotalDebt(data[0]['total_debt'])
         setSubmissions(data[0]['submissions'])
-        console.log(data[0]['submissions'])
       })
     }, [])
 
