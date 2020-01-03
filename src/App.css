@@ -264,6 +264,17 @@ label{
   .storyAdded{
     grid-column: span 1;
   }
+
+  .AddYourStory{
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 41px 60px 1fr 57px 50px;
+    grid-template-areas: 
+    "header header header" 
+    "name name debt"
+    "story story story"
+    "email email email"
+    ". . submit";
+  }
 }
 
 #SAheader{

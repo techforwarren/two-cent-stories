@@ -43,7 +43,7 @@ export function AddYourStory(props){
                 } 
                 else if(res.status === 409) {
                     document.getElementById("email").classList.add('error');
-                    setEmailErrorMessage("This email address is already in use")
+                    setEmailErrorMessage("Email address already in use")
                 }
             });
         } else {
