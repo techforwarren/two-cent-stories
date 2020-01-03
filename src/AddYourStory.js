@@ -38,7 +38,7 @@ export function AddYourStory(props){
         if(isEnabled){
             fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
             .then((res) => {
-                if(res.ok){
+                if(res.status === 200){
                     setHasSubmit(true);
                 } 
                 else if(res.status === 409) {
