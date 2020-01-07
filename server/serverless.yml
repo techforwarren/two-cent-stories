@@ -6,6 +6,8 @@ plugins:
 provider:
   name: aws
   runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
   environment:
     UI_HOST: ${self:custom.UI_HOST.${self:provider.stage}}
   apiGateway:
@@ -34,11 +36,6 @@ provider:
         - ses:SendRawEmail
       Resource:
         - "*"
-
-
-stage: dev # TODO make this configurable
-region: us-east-1
-
 
 custom:
   apiGatewayThrottling:
