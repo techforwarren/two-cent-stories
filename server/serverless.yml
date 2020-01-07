@@ -6,6 +6,12 @@ plugins:
 provider:
   name: aws
   runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  environment:
+    UI_HOST: ${self:custom.UI_HOST.${self:provider.stage}}
+    ES_ENDPOINT:
+      Fn::GetAtt: ["SubmissionSearch", "DomainEndpoint"]
   apiGateway:
     minimumCompressionSize: 1024
   logs:
@@ -33,22 +39,18 @@ provider:
       Resource:
         - "*"
 
-
-stage: dev # TODO make this configurable
-region: us-east-1
-
-
 custom:
-  # Configures throttling settings for all http endpoints
   apiGatewayThrottling:
     maxRequestsPerSecond: 100
     maxConcurrentRequests: 50
   pythonRequirements:
     dockerizePip: non-linux
   cacheEnabled:
+    local: false
     dev: false
     prod: true
   versionFunctions:
+    local: false
     dev: false
     prod: true
   apiGatewayCaching:
@@ -56,10 +58,11 @@ custom:
     clusterSize: '0.5'
     ttlInSeconds: 90
     dataEncrypted: false
+  UI_HOST: # TODO make these different as appropriate
+    local: https://techforwarren.github.io/two-cent-stories/
+    dev: https://techforwarren.github.io/two-cent-stories/
+    prod: https://techforwarren.github.io/two-cent-stories/
 
-# TODO define service wide environment variables here
-#  environment:
-#    variable1: value1
 
 package:
   exclude:
@@ -67,7 +70,7 @@ package:
 
 functions:
   submissions:
-    handler: handler.get_submissions # TODO add caching https://github.com/DianaIonita/serverless-api-gateway-caching#readme
+    handler: handler.get_submissions
     events:
       - http:
           path: /submissions
@@ -76,6 +79,7 @@ functions:
             querystrings:
               include: false # optional # for ex, include=submission1,submission2
               limit: false # optional
+              from: false # optional
           caching:
             enabled: true
             cacheKeyParameters:
@@ -101,8 +105,8 @@ functions:
           path: /submissions
           method: post
           throttling:
-            maxRequestsPerSecond: 50 # TODO lower these?
-            maxConcurrentRequests: 20
+            maxRequestsPerSecond: 30
+            maxConcurrentRequests: 10
           cors:
             origins:
               - http://twocentstories.com
@@ -127,8 +131,8 @@ functions:
           path: /submissions/{submissionId}/verify
           method: get
           throttling:
-            maxRequestsPerSecond: 50 # TODO lower these?
-            maxConcurrentRequests: 20
+            maxRequestsPerSecond: 30
+            maxConcurrentRequests: 10
           request:
             parameters:
               paths:
