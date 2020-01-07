@@ -19,6 +19,11 @@ CORS_HEADERS = {
 }
 
 
+def get_api_url(event):
+    request_context = event["requestContext"]
+    return f"https://{request_context['domainName']}/{request_context['stage']}"
+
+
 def get_submissions(event, context):
     fields_to_output = ["firstName", "debt", "story", "verifiedDate"]
 
@@ -125,15 +130,15 @@ def mark_verified(submission):
     }
 
 
-def send_email(submission_record, submission_id):
+def send_email(submission_record, submission_id, api_url):
     client = boto3.client("ses")
 
     verify_url = (
-        path.join(HOST, f"submissions/{submission_id}/verify")
+        path.join(api_url, f"submissions/{submission_id}/verify")
         + f"?token={submission_record['tokenVerify']}"
     )
     delete_url = (
-        path.join(HOST, f"submissions/{submission_id}/delete")
+        path.join(api_url, f"submissions/{submission_id}/delete")
         + f"?token={submission_record['tokenDelete']}"
     )
     email_body = (
@@ -187,7 +192,7 @@ def post_submission(event, context):
 
     response = ES_DB.index(index="submissions", body=record)
 
-    send_email(record, response["_id"])
+    send_email(record, response["_id"], get_api_url(event))
 
     return {
         "statusCode": 200,
