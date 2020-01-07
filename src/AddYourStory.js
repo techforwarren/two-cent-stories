@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import Modal from './Modal';
+import React, { useState } from 'react';
 
 export function AddYourStory(props){
    
@@ -8,69 +7,157 @@ export function AddYourStory(props){
     const [storyInput, setStoryInput] = useState("");
     const [emailInput, setEmailInput] = useState("");
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [validName, setValidName] = useState(false);
+    const [validDebt, setValidDebt] = useState(false);
+    const [validEmail, setValidEmail] = useState(false);
+    const [validStory, setValidStory] = useState(true);
+    
+    const isEnabled = validName && validDebt && validEmail && validStory;
+
+    const [emailErrorMessage, setEmailErrorMessage] = useState("");
+    const [storyErrorMessage, setStoryErrorMessage] = useState("");
+
+    const [hasSubmit, setHasSubmit] = useState(false);
         
-    function toggleModal(){
-        document.body.classList.toggle('noscroll');
-        setIsModalVisible(!isModalVisible);
-    }
+    const postOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'applications/json'
+        },
+        body: JSON.stringify({
+            "name":nameInput,
+            "debt":Number(debtInput),
+            "story":storyInput,
+            "email":emailInput
+        })
+    };
 
     function onSubmit(event){
         event.preventDefault();
+        // if all required fields are full send to db 
+        if(isEnabled){
+            fetch(process.env.REACT_APP_API_ENDPOINT, postOptions)
+            .then((res) => {
+                if(res.status === 200){
+                    setHasSubmit(true);
+                } 
+                else if(res.status === 409) {
+                    document.getElementById("email").classList.add('error');
+                    setEmailErrorMessage("Email address already in use")
+                }
+            });
+        } else {
+            // check fields and set errors
+            if(!validName){
+                document.getElementById("name").classList.add('error');
+            }
+            if(!validDebt){
+                document.getElementById("debt").classList.add('error');
+            }
+            if(!validEmail){
+                document.getElementById("email").classList.add('error');
 
-        // send to db
-
-        // show confirmation modal (your story will be posted after ...)
-        toggleModal();
-        console.log(nameInput);
-        console.log(debtInput);
-        console.log(storyInput);
-        console.log(emailInput)
+            }
+            
+        }
     }
-    
+
     function cleanDebtInput(event){
         let cleanValue = event.target.value.replace(/\D*/g, '');
+        if(cleanValue > 0){
+            setValidDebt(true);
+            event.target.classList.remove('error')
+        } else {
+            setValidDebt(false)
+            event.target.classList.add('error');
+        }
         setDebtInput(cleanValue);
     }
 
     
     return(
-    <div className="AddYourStory" onSubmit={onSubmit}> 
+    <> 
+        {hasSubmit === false && 
+        <form className="AddYourStory" onSubmit={onSubmit}>
+            <h3 id="AYSheader">ADD YOUR STORY</h3>
+            
+            <div id="AYSname">
+                    <label htmlFor="name">First Name</label>
+                    <input id="name" value={nameInput} onChange={(event) => {
+                        if(event.target.value.length > 0){
+                            setValidName(true);
+                            event.target.classList.remove('error')
+                        } else {
+                            setValidName(false);
+                            event.target.classList.add('error')
+                        }
+                        setNameInput(event.target.value)
+                    }}>
+                    </input>
+                </div>
+                <div id="AYSdebt">
+                    <label htmlFor="debt">Student Loan Debt</label>
+                    <input id="debt" value={debtInput} maxLength='6' onChange={cleanDebtInput}></input>
+                </div>
+                <div id='AYSstory'>
+                    <label htmlFor="story">Your Story</label>
+                    <span className="errormessage">{storyErrorMessage}</span>
+                    <textarea id="story" value={storyInput} 
+                    onChange={(event) => {
+                        setStoryInput(event.target.value)
+                        if(event.target.value.length > 2000){
+                            setValidStory(false);
+                            setStoryErrorMessage("Max length is 2000 characters");
+                            event.target.classList.add('error');
+                        } else {
+                            setValidStory(true);
+                            setStoryErrorMessage("");
+                            event.target.classList.remove('error');
+                        }
+                    }} maxLength="2001"></textarea>
+                </div>
+                <div id='AYSemail'>
+                    <label htmlFor="email">Email</label>
+                    <span className="errormessage">{emailErrorMessage}</span>
+                    <input id="email" value={emailInput} 
+                    onChange={(event) =>{
+                        setEmailInput(event.target.value)
+                        if(event.target.value.includes('@')){
+                            setValidEmail(true);
+                            setEmailErrorMessage("")
+                            event.target.classList.remove('error');
+                        }
+                    }}
+                    onBlur={(event) => {
+                            if(event.target.value.includes('@')){
+                                setValidEmail(true);
+                                setEmailErrorMessage("")
+                                event.target.classList.remove('error');
+                            } else {
+                                setValidEmail(false);
+                                setEmailErrorMessage("Enter valid email")
+                                event.target.classList.add('error');
+                            }
+                        }}>
+                    </input>
+                </div>
+                <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
+        </form>
+        }
 
-        <h3 id="AYSheader">ADD YOUR STORY</h3>
+        {hasSubmit === true &&
+            <div className="storyAdded">
+                <div id="SAheader">
+                    <h3>Thanks for sharing your story, {nameInput}</h3>
+                </div>
+                <div id="SAmessage">
+                    <p>Check your email! We will post your story after you verify it.</p>
+                </div>
+            </div>
+        }
 
-        <div id="AYSname">
-            <label htmlFor="name">Name</label>
-            <input id="name" value={nameInput} onChange={(event) => setNameInput(event.target.value)}></input>
-        </div>
-        <div id="AYSdebt">
-            <label htmlFor="debt">Student Loan Debt</label>
-            <input id="debt" value={debtInput} onChange={cleanDebtInput} maxLength='7' minLength='1'></input>
-        </div>
-        <div id='AYSstory'>
-            <label htmlFor="story">Your Story</label>
-            <textarea id="story" value={storyInput} onChange={(event) => setStoryInput(event.target.value)}></textarea>
-        </div>
-        <div id='AYSemail'>
-            <label htmlFor="email">Email</label>
-            <input id="email" value={emailInput} onChange={(event) => setEmailInput(event.target.value)}></input>
-        </div>
-        <button id="AYSsubmit" onClick={onSubmit}>Submit</button>
-
-        { isModalVisible && (
-            <Modal onModalClose={() => {
-                document.body.classList.toggle('noscroll');
-                setIsModalVisible(false)
-            }}>
-                <Modal.Header>Thanks, {nameInput}!</Modal.Header>
-                <Modal.Body> 
-                    you'll receive an email ...</Modal.Body>
-                <Modal.Footer>
-                    <Modal.Footer.CloseBtn>Close</Modal.Footer.CloseBtn>
-                </Modal.Footer>
-            </Modal>
-        )}
-    </div>
+        
+    </>
     );
 }
 

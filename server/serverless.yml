@@ -1,0 +1,222 @@
+service: two-cent-stories
+plugins:
+  - serverless-api-gateway-throttling
+  - serverless-python-requirements
+  - serverless-api-gateway-caching
+provider:
+  name: aws
+  runtime: python3.8
+  apiGateway:
+    minimumCompressionSize: 1024
+  logs:
+    restApi: true
+  tracing:
+    apiGateway: true
+    lambda: true
+  memorySize: 128 # in MB
+  versionFunctions: ${self:custom.versionFunctions.${self:provider.stage}}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - es:ESHttpPost
+        - es:ESHttpPut
+        - es:ESHttpDelete
+        - es:ESHttpGet
+        - es:DescribeElasticsearchDomain
+      Resource:
+        - { "Fn::GetAtt": ["SubmissionSearch", "DomainArn"] }
+        - { "Fn::Join": ["", ["Fn::GetAtt": ["SubmissionSearch", "DomainArn"], "/*"]] }
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource:
+        - "*"
+
+
+stage: dev # TODO make this configurable
+region: us-east-1
+
+
+custom:
+  # Configures throttling settings for all http endpoints
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 100
+    maxConcurrentRequests: 50
+  pythonRequirements:
+    dockerizePip: non-linux
+  cacheEnabled:
+    dev: false
+    prod: true
+  versionFunctions:
+    dev: false
+    prod: true
+  apiGatewayCaching:
+    enabled: ${self:custom.cacheEnabled.${self:provider.stage}}
+    clusterSize: '0.5'
+    ttlInSeconds: 90
+    dataEncrypted: false
+
+# TODO define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+package:
+  exclude:
+    venv/**
+
+functions:
+  submissions:
+    handler: handler.get_submissions # TODO add caching https://github.com/DianaIonita/serverless-api-gateway-caching#readme
+    events:
+      - http:
+          path: /submissions
+          method: get
+          request:
+            querystrings:
+              include: false # optional # for ex, include=submission1,submission2
+              limit: false # optional
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.querystring.include
+              - name: request.querystring.limit
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  create_submission:
+    handler: handler.post_submission
+    events:
+      - http:
+          path: /submissions
+          method: post
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+          request:
+            schema:
+              application/json: ${file(create_request.json)}
+            passThrough: NEVER
+  verify_submission:
+    handler: handler.verify_submission
+    events:
+      - http:
+          path: /submissions/{submissionId}/verify
+          method: get
+          throttling:
+            maxRequestsPerSecond: 50 # TODO lower these?
+            maxConcurrentRequests: 20
+          request:
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  delete_submission:
+    handler: handler.delete_submission
+    events:
+      - http:
+          path: /submissions/{submissionId}/delete
+          method: get
+          throttling:
+            maxRequestsPerSecond: 1
+            maxConcurrentRequests: 2
+          request:
+            parameters:
+              paths:
+                submissionId: true
+            querystrings:
+              token: true
+          cors:
+            origins:
+              - http://twocentstories.com
+              - https://twocentstories.com
+              - https://techforwarren.github.io
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  load_sample_data:
+    handler: load_sample_data.load_data
+  delete_sample_data:
+    handler: load_sample_data.delete_data
+  list_data:
+    handler: load_sample_data.list_data
+
+# Examples for later
+#          request:
+#            parameters:
+#              querystrings:
+#                url: true
+#              headers:
+#                foo: false
+#              paths:
+#                bar: false
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+
+
+resources:
+  Resources:
+    # TODO ADD WAF for rate limiting and such
+    SubmissionSearch:
+      Type: "AWS::Elasticsearch::Domain"
+      Properties:
+        ElasticsearchVersion: "7.1"
+        DomainName: "submissions-es-${self:provider.stage}"
+        ElasticsearchClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: "1"
+          ZoneAwarenessEnabled: false
+          InstanceType: "t2.small.elasticsearch"
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: "gp2"
+  #  Outputs:
+  #     NewOutput:
+  #       Description: "Description for the output"
+  #       Value: "Some output value"

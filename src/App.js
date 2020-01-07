@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import NameBlock from './NameBlock';
-import testData from './testData.json';
 
 function App() {
 
   const billGatesTotal = 6379000000;
-  let leftover = billGatesTotal;
 
-  const data = testData.people;
+  const [submissions, setSubmissions] = useState([]);
+  const [totalDebt, setTotalDebt] = useState(0);
 
-  function getLeftover(){
-    data.forEach((person) => {
-      leftover -= person.debt;
-    });
 
-  }
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_ENDPOINT)
+      .then((res) => res.json())
+      .then((data) =>{
+        setTotalDebt(data[0]['total_debt'])
+        setSubmissions(data[0]['submissions'])
+      })
+    }, [])
 
-  getLeftover();
+    function moneyLeft(){
+      return(billGatesTotal-totalDebt);
+    }
 
   return (
     <div className="App">
@@ -34,7 +38,7 @@ function App() {
       <div className="App-main">
         <div className="App-container">
           <div className="App-section">
-            <NameBlock data={data}/>
+            <NameBlock data={submissions}/>
           </div>
         </div>
       </div>
@@ -42,18 +46,22 @@ function App() {
       <div className="App-footer">
         <div className="App-container">
           <div className="App-section">
-            {leftover > 0 && 
-            <p className="text-lg text-center">... and still have ${leftover.toLocaleString()} left over.</p>
+            {moneyLeft() > 0 && 
+            <p className="text-lg text-center">... and still have ${moneyLeft().toLocaleString()} left over.</p>
             }
             
             <p className="text-base">Elizabeth’s wealth tax, which only impacts America’s 75,000 wealthiest families, would generate enough revenue to cover universal child care, quality public education, forgive student loan debt, provide free public college, and help finance Medicare for All.</p>
             <p className="text-base text-center">
-              <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the Wealth tax and join the fight</a>
+              <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the wealth tax</a> and <a href="https://elizabethwarren.com/join-us">join the fight</a>
             </p>
+            <div className="disclaimer">
+              <p>Not affiliated with the Warren For President campaign</p>
+              <p>Created by volunteers</p>
+            </div>
           </div>
         </div>
       </div>
-
+  
     </div>
   );
 }
