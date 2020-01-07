@@ -2,21 +2,27 @@ import datetime
 import json
 import secrets
 from os import path
+import os
+import urllib.parse
 
 import boto3
 from elasticsearch import NotFoundError
 
 from databases import ES_DB
 
-# TODO make configurable
-HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
-UI_HOST = "https://techforwarren.github.io/two-cent-stories/"
+UI_HOST = os.environ["UI_HOST"]
+
+parsed_ui_host = urllib.parse.urlparse(UI_HOST)
 
 CORS_HEADERS = {
-    # TODO check request against a list of URLs and return one if it matches
-    "Access-Control-Allow-Origin": "https://techforwarren.github.io",
+    "Access-Control-Allow-Origin": "*",  # TODO uncomment before launch # f"{parsed_ui_host.scheme or 'https'}://{parsed_ui_host.netloc}",
     "Access-Control-Allow-Credentials": True,
 }
+
+
+def get_api_url(event):
+    request_context = event["requestContext"]
+    return f"https://{request_context['domainName']}/{request_context['stage']}"
 
 
 def get_submissions(event, context):
@@ -36,6 +42,12 @@ def get_submissions(event, context):
     except (ValueError, AssertionError, TypeError):
         limit = 90
 
+    try:
+        from_ = int(query_params.get("from"))
+        assert 0 < from_ < 9600
+    except (ValueError, AssertionError, TypeError):
+        from_ = 0
+
     results = ES_DB.search(
         index="submissions",
         body={
@@ -43,6 +55,7 @@ def get_submissions(event, context):
             "_source": fields_to_output,
             "sort": [{"verifiedDate": {"order": "desc"}}],
             "aggs": {"total_debt": {"sum": {"field": "debt"}}},
+            "from": from_,
             "size": limit,
         },
     )
@@ -79,7 +92,15 @@ def get_submissions(event, context):
     return {
         "statusCode": 200,
         "headers": {**CORS_HEADERS},
-        "body": json.dumps([{"submissions": submissions, "total_debt": total_debt,}]),
+        "body": json.dumps(
+            [
+                {
+                    "submissions": submissions,
+                    "count_submissions": results["hits"]["total"]["value"],
+                    "total_debt": total_debt,
+                }
+            ]
+        ),
     }
 
 
@@ -110,15 +131,15 @@ def mark_verified(submission):
     }
 
 
-def send_email(submission_record, submission_id):
+def send_email(submission_record, submission_id, api_url):
     client = boto3.client("ses")
 
     verify_url = (
-        path.join(HOST, f"submissions/{submission_id}/verify")
+        path.join(api_url, f"submissions/{submission_id}/verify")
         + f"?token={submission_record['tokenVerify']}"
     )
     delete_url = (
-        path.join(HOST, f"submissions/{submission_id}/delete")
+        path.join(api_url, f"submissions/{submission_id}/delete")
         + f"?token={submission_record['tokenDelete']}"
     )
     email_body = (
@@ -172,7 +193,7 @@ def post_submission(event, context):
 
     response = ES_DB.index(index="submissions", body=record)
 
-    send_email(record, response["_id"])
+    send_email(record, response["_id"], get_api_url(event))
 
     return {
         "statusCode": 200,
@@ -243,6 +264,7 @@ def verify_submission(event, context):
                 "verifiedDate": datetime.datetime.now().isoformat(),
             }
         },
+        refresh="wait_for",
     )
 
     return {
@@ -289,7 +311,7 @@ def delete_submission(event, context):
             "body": f"Token: {token} did not match",
         }
 
-    ES_DB.delete(index="submissions", id=submission_id)
+    ES_DB.delete(index="submissions", id=submission_id, refresh="wait_for")
 
     return {
         "statusCode": 200,
