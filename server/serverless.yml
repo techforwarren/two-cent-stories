@@ -106,8 +106,8 @@ functions:
           path: /submissions
           method: post
           throttling:
-            maxRequestsPerSecond: 50 # TODO lower these?
-            maxConcurrentRequests: 20
+            maxRequestsPerSecond: 30
+            maxConcurrentRequests: 10
           cors:
             origins:
               - http://twocentstories.com
@@ -132,8 +132,8 @@ functions:
           path: /submissions/{submissionId}/verify
           method: get
           throttling:
-            maxRequestsPerSecond: 50 # TODO lower these?
-            maxConcurrentRequests: 20
+            maxRequestsPerSecond: 30
+            maxConcurrentRequests: 10
           request:
             parameters:
               paths:
