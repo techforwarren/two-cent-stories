@@ -10,6 +10,8 @@ provider:
   region: us-east-1
   environment:
     UI_HOST: ${self:custom.UI_HOST.${self:provider.stage}}
+    ES_ENDPOINT:
+      Fn::GetAtt: ["SubmissionSearch", "DomainEndpoint"]
   apiGateway:
     minimumCompressionSize: 1024
   logs:

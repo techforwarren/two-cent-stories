@@ -1,12 +1,10 @@
-import boto3
 import json
-import decimal
 import datetime
 from databases import ES_DB
 
 from elasticsearch_dsl import Search, Index
 
-# TODO set mapping for story field because it is long
+# TODO set mapping for story field because it is potentially long
 
 submissions_index = Index("submissions", using=ES_DB)
 
