@@ -27,7 +27,7 @@ function App() {
     <div className="App">      
       <div>
         <h1>Bill Gates would pay $6.379 billion next year under Elizabeth's wealth tax.</h1>
-        <h3>That's enough money to pay off student loan debt for ...</h3>
+        <h2>That's enough money to pay off student loan debt for ...</h2>
       </div>
         <NameBlock data={submissions}/>
       <div>
