@@ -39,7 +39,7 @@ function App() {
         <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the wealth tax</a> and <a href="https://elizabethwarren.com/join-us">join the fight</a>
         <div className="disclaimer">
           <p>Not affiliated with the Warren For President campaign</p>
-          <p>Created by volunteers</p>
+          <p>Created by <a href="https://community.elizabethwarren.com/main/groups/33907/lounge">Tech for Warren</a>, a volunteer group</p>
         </div>
         
       </div>
