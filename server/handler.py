@@ -258,6 +258,7 @@ def verify_submission(event, context):
                 "verifiedDate": datetime.datetime.now().isoformat(),
             }
         },
+        refresh="wait_for",
     )
 
     return {
