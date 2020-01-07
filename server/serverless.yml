@@ -6,6 +6,8 @@ plugins:
 provider:
   name: aws
   runtime: python3.8
+  environment:
+    UI_HOST: ${self:custom.UI_HOST.${self:provider.stage}}
   apiGateway:
     minimumCompressionSize: 1024
   logs:
@@ -46,9 +48,11 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
   cacheEnabled:
+    local: false
     dev: false
     prod: true
   versionFunctions:
+    local: false
     dev: false
     prod: true
   apiGatewayCaching:
@@ -56,10 +60,11 @@ custom:
     clusterSize: '0.5'
     ttlInSeconds: 90
     dataEncrypted: false
+  UI_HOST: # TODO make these different as appropriate
+    local: https://techforwarren.github.io/two-cent-stories/
+    dev: https://techforwarren.github.io/two-cent-stories/
+    prod: https://techforwarren.github.io/two-cent-stories/
 
-# TODO define service wide environment variables here
-#  environment:
-#    variable1: value1
 
 package:
   exclude:

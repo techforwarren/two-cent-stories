@@ -2,18 +2,20 @@ import datetime
 import json
 import secrets
 from os import path
+import os
+import urllib.parse
 
 import boto3
 from elasticsearch import NotFoundError
 
 from databases import ES_DB
 
-# TODO make configurable
-UI_HOST = "https://techforwarren.github.io/two-cent-stories/"
+UI_HOST = os.environ["UI_HOST"]
+
+parsed_ui_host = urllib.parse.urlparse(UI_HOST)
 
 CORS_HEADERS = {
-    # TODO check request against a list of URLs and return one if it matches
-    "Access-Control-Allow-Origin": "https://techforwarren.github.io",
+    "Access-Control-Allow-Origin": "*",  # TODO uncomment before launch # f"{parsed_ui_host.scheme or 'https'}://{parsed_ui_host.netloc}",
     "Access-Control-Allow-Credentials": True,
 }
 
