@@ -8,12 +8,9 @@ from elasticsearch_dsl import Search, Index
 
 # TODO set mapping for story field because it is long
 
-submissions_index = Index('submissions', using=ES_DB)
+submissions_index = Index("submissions", using=ES_DB)
 
-submissions_index.settings(
-    number_of_shards=1,
-    number_of_replicas=0
-)
+submissions_index.settings(number_of_shards=1, number_of_replicas=0)
 submissions = [
     {
         "id": "0",
@@ -260,35 +257,31 @@ def load_data(event, context):
         print("Adding submission:", submission)
 
         record = {
-                'firstName': submission["firstName"],
-                'debt': submission["debt"],
-                'id': submission["id"],
-                'story': submission["story"],
-                "createdDate": datetime.datetime.now().isoformat(),
-                "verifiedDate": datetime.datetime.now().isoformat() if submission.get('verified') is not False else None,
-                "tokenVerify": submission.get("token_verify"),
-                "tokenDelete": submission.get("token_delete"),
-            }
+            "firstName": submission["firstName"],
+            "debt": submission["debt"],
+            "id": submission["id"],
+            "story": submission["story"],
+            "createdDate": datetime.datetime.now().isoformat(),
+            "verifiedDate": datetime.datetime.now().isoformat()
+            if submission.get("verified") is not False
+            else None,
+            "tokenVerify": submission.get("token_verify"),
+            "tokenDelete": submission.get("token_delete"),
+        }
 
-        ES_DB.index(index='submissions', id=submission["id"], body=record)
+        ES_DB.index(index="submissions", id=submission["id"], body=record)
 
 
 def list_data(event, context):
-    results = ES_DB.search(index="submissions", body={
-        "sort": [
-            {"verifiedDate": {"order": "desc"}}
-        ],
-        "size": 200
-    })
+    results = ES_DB.search(
+        index="submissions",
+        body={"sort": [{"verifiedDate": {"order": "desc"}}], "size": 200},
+    )
 
     submissions = [submission["_source"] for submission in results["hits"]["hits"]]
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps([{
-            "submissions": submissions,
-        }])
-    }
+    return {"statusCode": 200, "body": json.dumps([{"submissions": submissions,}])}
+
 
 def delete_data(event, context):
     submissions_index.delete()
