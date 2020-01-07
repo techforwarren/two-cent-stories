@@ -36,6 +36,12 @@ def get_submissions(event, context):
     except (ValueError, AssertionError, TypeError):
         limit = 90
 
+    try:
+        from_ = int(query_params.get("from"))
+        assert 0 < from_ < 9600
+    except (ValueError, AssertionError, TypeError):
+        from_ = 0
+
     results = ES_DB.search(
         index="submissions",
         body={
@@ -43,6 +49,7 @@ def get_submissions(event, context):
             "_source": fields_to_output,
             "sort": [{"verifiedDate": {"order": "desc"}}],
             "aggs": {"total_debt": {"sum": {"field": "debt"}}},
+            "from": from_,
             "size": limit,
         },
     )

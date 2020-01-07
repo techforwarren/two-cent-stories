@@ -76,6 +76,7 @@ functions:
             querystrings:
               include: false # optional # for ex, include=submission1,submission2
               limit: false # optional
+              from: false # optional
           caching:
             enabled: true
             cacheKeyParameters:
