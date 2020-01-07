@@ -9,7 +9,6 @@ from elasticsearch import NotFoundError
 from databases import ES_DB
 
 # TODO make configurable
-HOST = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com" + "/" + "dev"
 UI_HOST = "https://techforwarren.github.io/two-cent-stories/"
 
 CORS_HEADERS = {
