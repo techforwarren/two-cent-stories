@@ -79,7 +79,15 @@ def get_submissions(event, context):
     return {
         "statusCode": 200,
         "headers": {**CORS_HEADERS},
-        "body": json.dumps([{"submissions": submissions, "total_debt": total_debt,}]),
+        "body": json.dumps(
+            [
+                {
+                    "submissions": submissions,
+                    "count_submissions": results["hits"]["total"]["value"],
+                    "total_debt": total_debt,
+                }
+            ]
+        ),
     }
 
 
