@@ -13,10 +13,14 @@
   width: 100vw;
 }
 
-.App-header,
-.App-footer {
+.App-header {
   padding-top: 3rem;
   padding-bottom: 1.5rem;
+}
+
+.App-footer {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
 }
 
 .App-main {
@@ -38,10 +42,14 @@
 }
 
 @media (min-width: 748px) {
-  .App-header,
-  .App-footer {
+  .App-header {
     padding-top: 4rem;
     padding-bottom: 2rem;
+  }
+  
+  .App-footer {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
   }
 }
 
@@ -98,6 +106,9 @@
 }
 
 @media (min-width: 1224px) {
+  .text-center {
+    text-align: center;
+  }
   .text-right {
     text-align: right;
   }

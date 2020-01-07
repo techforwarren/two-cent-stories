@@ -47,11 +47,11 @@ function App() {
         <div className="App-container">
           <div className="App-section">
             {moneyLeft() > 0 && 
-            <p className="text-lg text-center">... and still have ${moneyLeft().toLocaleString()} left over.</p>
+            <p className="text-lg text-right">... and still have ${moneyLeft().toLocaleString()} left over.</p>
             }
             
             <p className="text-base">Elizabeth’s wealth tax, which only impacts America’s 75,000 wealthiest families, would generate enough revenue to cover universal child care, quality public education, forgive student loan debt, provide free public college, and help finance Medicare for All.</p>
-            <p className="text-base text-right">
+            <p className="text-base text-center">
               <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Find out more about the wealth tax</a> and <a href="https://elizabethwarren.com/join-us">join the fight</a>
             </p>
             <div className="disclaimer">
