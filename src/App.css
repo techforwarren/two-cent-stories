@@ -15,7 +15,8 @@
 
 .App-header,
 .App-footer {
-  padding: 3rem 0;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
 }
 
 .App-main {
@@ -40,7 +41,7 @@
   .App-header,
   .App-footer {
     padding-top: 4rem;
-    padding-bottom: 4rem;
+    padding-bottom: 2rem;
   }
 }
 
@@ -67,7 +68,6 @@
 
 @media (min-width: 748px) {
   .App-header,
-  .App-main,
   .App-footer {
     font-size: 1.25rem;
   }
@@ -93,9 +93,13 @@
   font-size: 3em;
 }
 
+.App button {
+  font-size: inherit;
+}
+
 @media (min-width: 1224px) {
-  .text-center {
-    text-align: center;
+  .text-right {
+    text-align: right;
   }
 }
 
