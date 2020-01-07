@@ -311,7 +311,7 @@ def delete_submission(event, context):
             "body": f"Token: {token} did not match",
         }
 
-    ES_DB.delete(index="submissions", id=submission_id)
+    ES_DB.delete(index="submissions", id=submission_id, refresh="wait_for")
 
     return {
         "statusCode": 200,
