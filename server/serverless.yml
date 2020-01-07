@@ -41,7 +41,6 @@ region: us-east-1
 
 
 custom:
-  # Configures throttling settings for all http endpoints
   apiGatewayThrottling:
     maxRequestsPerSecond: 100
     maxConcurrentRequests: 50
@@ -72,7 +71,7 @@ package:
 
 functions:
   submissions:
-    handler: handler.get_submissions # TODO add caching https://github.com/DianaIonita/serverless-api-gateway-caching#readme
+    handler: handler.get_submissions
     events:
       - http:
           path: /submissions
