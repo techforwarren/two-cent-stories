@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import 'typeface-roboto';
 import './App.css';
 import NameBlock from './NameBlock';
 
