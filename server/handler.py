@@ -123,7 +123,7 @@ def send_email(submission_record, submission_id):
     )
     email_body = (
         f"<body>"
-        f"<p>Thank you for providing your student debt story to the Two Cent Project! For security purposes, we must verify your email before publishing your story on our website.</p>"
+        f"<p>Thank you for providing your student debt story to Two Cent Stories! For security purposes, we'd like to verify your email before publishing your story on our website.</p>"
         f"<p>Please verify your email to publish your story.</p>"
         f"<br/>"
         f"<br/>"
