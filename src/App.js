@@ -12,7 +12,7 @@ function App() {
 
 
   useEffect(() => {
-    fetch('https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com/dev/submissions')
+    fetch(process.env.REACT_APP_API_ENDPOINT)
       .then((res) => res.json())
       .then((data) => {
         setTotalDebt(data[0]['total_debt'])
