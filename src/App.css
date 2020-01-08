@@ -1,8 +1,12 @@
 /* App Root */
 
 .App {
+  color: #1f1f1f;
   font-family: 'Roboto', sans-serif;
   line-height: 1.25;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 
