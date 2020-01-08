@@ -1,16 +1,138 @@
+/* App Root */
+
 .App {
-  text-align: center;
-  max-width: 80%;
-  margin: 0 auto;
-  font-family: Helvetica, Arial, sans-serif;
+  color: #1f1f1f;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.25;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+
+/* Page Layout */
+
+.App-header,
+.App-main,
+.App-footer {
+  width: 100vw;
+}
+
+.App-header {
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+
+.App-footer {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.App-main {
+  min-height: 36rem;
+}
+
+.App-footer {
+  min-height: 24rem;
+}
+
+.App-container {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.App-section {
+  padding: 0 1rem;
+}
+
+@media (min-width: 748px) {
+  .App-header {
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+  
+  .App-footer {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+}
+
+@media (min-width: 1224px) {
+  .App-container {
+    max-width: 60rem;
+  }
+}
+
+@media (min-width: 1700px) {
+  .App-main .App-container {
+    max-width: 80rem;
+  }
+}
+
+
+/* Typography Helpers */
+
+.App-header,
+.App-main,
+.App-footer {
+  font-size: 1rem;
+}
+
+@media (min-width: 748px) {
+  .App-header,
+  .App-footer {
+    font-size: 1.25rem;
+  }
+}
+
+.text-sm {
+  font-size: 0.875em;
+}
+
+.text-base {
+  font-size: 1em;
+}
+
+.text-lg {
+  font-size: 1.5em;
+}
+
+.text-xl {
+  font-size: 2em;
+}
+
+.text-2xl {
+  font-size: 3em;
+}
+
+.App button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.App strong {
+  font-weight: 700;
+}
+
+@media (min-width: 1224px) {
+  .text-center {
+    text-align: center;
+  }
+  .text-right {
+    text-align: right;
+  }
+}
+
+
+/* */
 
 .JoinUsSingle{
   background-color: #B61B28;
   color: white;
-  font-size: 48px;
-  line-height: 48px;
-  font-weight: 600;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 700;
   padding: 0px 14px;
 }
 
@@ -38,7 +160,6 @@
 }
 
 #expandStory{
-  font-size: 16px;
   align-content: center;
   height: 100%;
   width: 110%;
@@ -52,7 +173,6 @@
 
 #nameDebt{
   margin: 0 auto;
-  font-size: 16px;
 }
 
 /* */
@@ -120,8 +240,8 @@
 }
 
 .close-btn {
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 1.125rem;
   background: #d5d5d5;
   border: none;
   height: 42px;
@@ -132,7 +252,6 @@
 
 input{
   border: 2px solid black;
-  font-size: 16px;
   padding: 10px 10px 10px 10px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -142,7 +261,6 @@ input{
 
 textarea{
   border: 2px solid black;
-  font-size: 16px;
   padding: 10px 10px 10px 10px;
   height: 135px;
   -webkit-box-sizing: border-box;
@@ -219,8 +337,8 @@ label{
   grid-area: submit;
   align-self: end;
   text-transform: uppercase;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 1.125rem;
   background: #d5d5d5;
   border: none;
   height: 42px;
@@ -235,7 +353,7 @@ label{
   position: relative;
   left: 10px;
   color: rgb(182,27,40);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 /* */
@@ -295,6 +413,6 @@ label{
 .disclaimer{
   padding-top: 20px;
   padding-bottom: 20px;
-  font-size: 11px;
-  line-height: 5px;
+  font-size: 0.75rem;
+  line-height: 1;
 }
