@@ -107,6 +107,10 @@
   font-size: inherit;
 }
 
+.App strong {
+  font-weight: 700;
+}
+
 @media (min-width: 1224px) {
   .text-center {
     text-align: center;
