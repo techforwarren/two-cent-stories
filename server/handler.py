@@ -144,9 +144,13 @@ def send_email(submission_record, submission_id, api_url):
     )
     email_body = (
         f"<body>"
+        f"<p>Thank you for providing your student debt story to Two Cent Stories! For security purposes, we'd like to verify your email before publishing your story on our website.</p>"
+        f"<p>Please verify your email to publish your story.</p>"
+        f"<br/>"
+        f"<br/>"
         f"<a target='_blank' href='{verify_url}'>Verify Your Story</a>"
-        f"<br>"
-        f"<br>"
+        f"<br/>"
+        f"<br/>"
         f"<a target='_blank' href='{delete_url}'>Delete Your Story</a>"
         f"</body>"
     )
