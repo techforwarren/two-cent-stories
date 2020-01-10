@@ -12,7 +12,7 @@ function App() {
 
 
   useEffect(() => {
-    fetch(REACT_APP_API_ENDPOINT)
+    fetch(process.env.REACT_APP_API_ENDPOINT)
       .then((res) => res.json())
       .then((data) => {
         setTotalDebt(data[0]['total_debt'])
