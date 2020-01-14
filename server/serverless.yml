@@ -182,8 +182,6 @@ functions:
             allowCredentials: false
   load_sample_data:
     handler: load_sample_data.load_data
-  delete_sample_data:
-    handler: load_sample_data.delete_data
   list_data:
     handler: load_sample_data.list_data
 
