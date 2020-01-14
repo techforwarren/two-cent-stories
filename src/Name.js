@@ -3,9 +3,11 @@ import Modal from './Modal';
 
 export function Name(props){
     const [isModalVisible, setIsModalVisible] = useState(false);
-        
+    const [previousElement, setPreviousElement] = useState();
+    
     function toggleModal(){
         document.body.classList.toggle('noscroll');
+        setPreviousElement(document.activeElement)
         setIsModalVisible(!isModalVisible);
     }
 
@@ -18,6 +20,7 @@ export function Name(props){
             { isModalVisible && (
                 <Modal onModalClose={() => {
                     document.body.classList.toggle('noscroll');
+                    previousElement.focus();
                     setIsModalVisible(false)
                 }}>
                     <Modal.Header>{props.firstName}'s Story</Modal.Header>

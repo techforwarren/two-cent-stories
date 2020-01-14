@@ -255,7 +255,7 @@ def load_data(event, context):
         print("Adding submission:", submission)
 
         record = {
-            "firstName": submission["firstName"],
+            "firstName": submission["firstName"] + "*",
             "debt": submission["debt"],
             "id": submission["id"],
             "story": submission["story"],
@@ -281,5 +281,5 @@ def list_data(event, context):
     return {"statusCode": 200, "body": json.dumps([{"submissions": submissions,}])}
 
 
-def delete_data(event, context):
+def delete_all_data(event, context):
     submissions_index.delete()

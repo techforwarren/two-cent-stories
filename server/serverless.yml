@@ -61,7 +61,7 @@ custom:
   UI_HOST: # TODO make these different as appropriate
     local: https://techforwarren.github.io/two-cent-stories/
     dev: https://techforwarren.github.io/two-cent-stories/
-    prod: https://techforwarren.github.io/two-cent-stories/
+    prod: https://twocentstories.com
 
 
 package:
@@ -182,8 +182,6 @@ functions:
             allowCredentials: false
   load_sample_data:
     handler: load_sample_data.load_data
-  delete_sample_data:
-    handler: load_sample_data.delete_data
   list_data:
     handler: load_sample_data.list_data
 
