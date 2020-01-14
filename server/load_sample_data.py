@@ -255,7 +255,7 @@ def load_data(event, context):
         print("Adding submission:", submission)
 
         record = {
-            "firstName": submission["firstName"],
+            "firstName": submission["firstName"] + "*",
             "debt": submission["debt"],
             "id": submission["id"],
             "story": submission["story"],
