@@ -58,9 +58,9 @@ custom:
     clusterSize: '0.5'
     ttlInSeconds: 90
     dataEncrypted: false
-  UI_HOST: # TODO make these different as appropriate
+  UI_HOST:
     local: https://techforwarren.github.io/two-cent-stories/
-    dev: https://techforwarren.github.io/two-cent-stories/
+    dev: https://staging--affectionate-bhabha-fb1e1e.netlify.com
     prod: https://twocentstories.com
 
 
@@ -87,9 +87,7 @@ functions:
               - name: request.querystring.limit
           cors:
             origins:
-              - http://twocentstories.com
-              - https://twocentstories.com
-              - https://techforwarren.github.io
+              - ${self:custom.UI_HOST.${self:provider.stage}}
             headers:
               - Content-Type
               - X-Amz-Date
@@ -109,9 +107,7 @@ functions:
             maxConcurrentRequests: 10
           cors:
             origins:
-              - http://twocentstories.com
-              - https://twocentstories.com
-              - https://techforwarren.github.io
+              - ${self:custom.UI_HOST.${self:provider.stage}}
             headers:
               - Content-Type
               - X-Amz-Date
@@ -141,9 +137,7 @@ functions:
               token: true
           cors:
             origins:
-              - http://twocentstories.com
-              - https://twocentstories.com
-              - https://techforwarren.github.io
+              - ${self:custom.UI_HOST.${self:provider.stage}}
             headers:
               - Content-Type
               - X-Amz-Date
@@ -169,9 +163,7 @@ functions:
               token: true
           cors:
             origins:
-              - http://twocentstories.com
-              - https://twocentstories.com
-              - https://techforwarren.github.io
+              - ${self:custom.UI_HOST.${self:provider.stage}}
             headers:
               - Content-Type
               - X-Amz-Date
