@@ -58,6 +58,7 @@ function App() {
             <div className="disclaimer text-center">
               <p>Not affiliated with the Warren For President campaign</p>
               <p>Created by volunteers</p>
+              <small><strong>*</strong> This name is a placeholder</small>
             </div>
           </div>
         </div>

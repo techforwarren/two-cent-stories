@@ -11,6 +11,14 @@ export function Name(props){
         setIsModalVisible(!isModalVisible);
     }
 
+    function removeAsterisk(name){
+        if(name.includes('*')){
+            return name.substring(0, name.length-1);
+        } else {
+            return name;
+        }
+    }
+
     return(
         <div className="Name">
             {props.story.length > 0 && <button id="expandStory" onClick={toggleModal}><strong>{props.firstName}</strong> ${props.debt.toLocaleString()}</button>}
@@ -23,7 +31,7 @@ export function Name(props){
                     previousElement.focus();
                     setIsModalVisible(false)
                 }}>
-                    <Modal.Header>{props.firstName}'s Story</Modal.Header>
+                    <Modal.Header>{removeAsterisk(props.firstName)}'s Story</Modal.Header>
                     <Modal.Body>{props.story}</Modal.Body>
                     <Modal.Footer>
                         <Modal.Footer.CloseBtn>Close</Modal.Footer.CloseBtn>

@@ -15,7 +15,7 @@ UI_HOST = os.environ["UI_HOST"]
 parsed_ui_host = urllib.parse.urlparse(UI_HOST)
 
 CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",  # TODO uncomment before launch # f"{parsed_ui_host.scheme or 'https'}://{parsed_ui_host.netloc}",
+    "Access-Control-Allow-Origin": f"{parsed_ui_host.scheme or 'https'}://{parsed_ui_host.netloc}",
     "Access-Control-Allow-Credentials": True,
 }
 
