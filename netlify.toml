@@ -1,5 +1,8 @@
 [context.staging]
     environment = { REACT_APP_API_ENDPOINT = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com/dev/submissions" }
 
+[context.deploy-preview]
+    environment = { REACT_APP_API_ENDPOINT = "https://tpkfcvx8jf.execute-api.us-east-1.amazonaws.com/dev/submissions" }
+    
 [context.prod]
     environment = { REACT_APP_API_ENDPOINT = "https://mu9o401i8b.execute-api.us-east-1.amazonaws.com/prod/submissions" }
