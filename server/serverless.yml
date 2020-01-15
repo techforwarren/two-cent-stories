@@ -48,7 +48,7 @@ custom:
   cacheEnabled:
     local: false
     dev: false
-    prod: true
+    prod: false # TODO change to true if we ever get any traffic. Would need to use ?include in the api calls to have good UX
   versionFunctions:
     local: false
     dev: false
