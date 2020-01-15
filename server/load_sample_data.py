@@ -281,5 +281,11 @@ def list_data(event, context):
     return {"statusCode": 200, "body": json.dumps([{"submissions": submissions,}])}
 
 
+def delete_sample_data(event, context):
+    for i in range(70):
+        print("deleting submission:", i)
+        ES_DB.delete(index="submissions", id=i, ignore=404)
+
+
 def delete_all_data(event, context):
     submissions_index.delete()
