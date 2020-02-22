@@ -5,7 +5,8 @@ import NameBlock from './NameBlock';
 
 function App() {
 
-  const billGatesTotal = 6379000000;
+//  const billGatesTotal = 6379000000;
+  const bloombergTotal = 3163000000;
 
   const [submissions, setSubmissions] = useState([]);
   const [totalDebt, setTotalDebt] = useState(0);
@@ -21,7 +22,7 @@ function App() {
     }, [])
 
     function moneyLeft(){
-      return(billGatesTotal-totalDebt);
+      return(bloombergTotal-totalDebt);
     }
 
   return (
@@ -30,7 +31,7 @@ function App() {
       <div className="App-header">
         <div className="App-container">
           <div className="App-section">
-            <h1 className="text-xl">Bill Gates would pay $6.379 billion next year under Elizabeth’s wealth tax.</h1>
+            <h1 className="text-xl">Michael Bloomberg would pay $3.163 billion next year under Elizabeth’s wealth tax.</h1>
             <h2 className="text-lg">That’s enough money to pay off student loan debt for ...</h2>
           </div>
         </div>
@@ -57,7 +58,7 @@ function App() {
             </p>
             <div className="disclaimer text-center">
               <p>Not affiliated with the Warren For President campaign</p>
-              <p>Created by volunteers</p>
+              <p><a href="https://elizabethwarren.com/all-in-for-warren/">Created by volunteers</a></p>
               <small><strong>*</strong> This name is a placeholder</small>
             </div>
           </div>
