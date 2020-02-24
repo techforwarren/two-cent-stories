@@ -32,7 +32,7 @@ function App() {
         <div className="App-container">
           <div className="App-section">
             <h1 className="text-xl">How Elizabeth Warren Would Make Bloomberg Pay Your Student Debt</h1>
-            <h2 className="text-lg">Michael Bloomberg isn’t a fan of cancelling student debt. But under Elizabeth Warren’s Ultra-Millionaire Tax plan, Bloomberg would pay $3.16 billion next year to help forgive student loans.</h1>
+            <h2 className="text-lg">Michael Bloomberg has proposed a $700 million plan to tackle student debt. But under Elizabeth Warren’s <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a> plan, Bloomberg would pay $3.16 billion next year alone.</h2>
             <h2 className="text-lg">That’s enough money to pay off student loan debt for ...</h2>
           </div>
         </div>
@@ -53,12 +53,12 @@ function App() {
             <p className="text-lg text-right">... and still have ${moneyLeft().toLocaleString()} left over.</p>
             }
             
-            <p className="text-base">Elizabeth’s Ultra-Millionaire Tax, which only impacts America’s 75,000 wealthiest families, would fund her biggest, boldest ideas, including:</p>
+            <p className="text-base">Elizabeth’s <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a>, which only impacts America’s 75,000 wealthiest families, would fund her biggest, boldest ideas, including:</p>
               <ul>
-                <li>Student loan debt forgiveness</li>
-                <li>Universal child care</li>
-                <li>Quality public education</li>
-                <li>Free public college for all</li>
+                <li><a href="https://elizabethwarren.com/plans/student-loan-debt-day-one">Student loan debt forgiveness</a></li>
+                <li><a href="https://elizabethwarren.com/kids/">Universal child care</a></li>
+                <li><a href="https://elizabethwarren.com/plans/public-education">Quality public education</a></li>
+                <li><a href="https://elizabethwarren.com/plans/affordable-higher-education">Free public college for all</a></li>
               </ul>
             <p className="text-base text-center">
               Find out more about the <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a> and <a href="https://elizabethwarren.com/join-us">join the fight!</a>
