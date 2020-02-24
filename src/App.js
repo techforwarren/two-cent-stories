@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'typeface-roboto';
 import './App.css';
 import NameBlock from './NameBlock';
+import CollapseStoryBlock from './CollapseStoryBlock';
 
 function App() {
 
@@ -40,7 +41,7 @@ function App() {
       <div className="App-main">
         <div className="App-container">
           <div className="App-section">
-            <NameBlock data={submissions}/>
+            <CollapseStoryBlock></CollapseStoryBlock>
           </div>
         </div>
       </div>
@@ -70,3 +71,5 @@ function App() {
 }
 
 export default App;
+
+//            <NameBlock data={submissions}/>
