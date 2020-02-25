@@ -129,7 +129,12 @@
 /* */
 
 .moreStoriesButton{
-  margin: 0 auto;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1.125rem;
+  background: #e9e9e9;
+  border: none;
+  height: 42px;
 }
 
 .buttonDiv{
@@ -140,12 +145,14 @@
 /* */
 
 .JoinUsSingle{
-  background-color: #B61B28;
-  color: white;
-  font-size: 3rem;
-  line-height: 1;
-  font-weight: 700;
+  background-color: #b7e4cf;
   padding: 0px 14px;
+  height: 50px;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .NameBlock{
