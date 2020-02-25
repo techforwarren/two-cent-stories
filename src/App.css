@@ -29,7 +29,7 @@
 }
 
 .App-main {
-  min-height: 36rem;
+  min-height: 1rem;
 }
 
 .App-footer {
@@ -125,6 +125,17 @@
   }
 }
 
+
+/* */
+
+.moreStoriesButton{
+  margin: 0 auto;
+}
+
+.buttonDiv{
+  text-align: center;
+  padding-top: 2rem;
+}
 
 /* */
 

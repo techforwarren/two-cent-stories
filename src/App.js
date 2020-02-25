@@ -12,19 +12,43 @@ function App() {
   const [submissions, setSubmissions] = useState([]);
   const [totalDebt, setTotalDebt] = useState(0);
 
+  const [lastSub, setLastSub] = useState(0);
+  const [totalSubs, setTotalSubs] = useState(0);
+  const limit = 12;
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_ENDPOINT)
+    
+    if(lastSub === 0){
+      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + 2 + "&from=" + lastSub)
       .then((res) => res.json())
       .then((data) => {
         setTotalDebt(data[0]['total_debt'])
-        setSubmissions(data[0]['submissions'])
+        setSubmissions(submissions.concat(data[0]['submissions']))
+        setTotalSubs(data[0]['count_submissions']);
       })
-    }, [])
-
-    function moneyLeft(){
-      return(bloombergTotal-totalDebt);
     }
+
+    else{
+      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + limit + "&from=" + lastSub)
+        .then((res) => res.json())
+        .then((data) => {
+          setTotalDebt(data[0]['total_debt'])
+          setSubmissions(submissions.concat(data[0]['submissions']))
+          setTotalSubs(data[0]['count_submissions']);
+        })
+    }
+    
+    }, [lastSub])
+
+
+  function loadStories(){
+    let newLastSub = lastSub + limit;
+    setLastSub(newLastSub)
+  }
+
+  function moneyLeft(){
+    return(bloombergTotal-totalDebt);
+  }
 
   return (
     <div className="App">
@@ -41,7 +65,10 @@ function App() {
       <div className="App-main">
         <div className="App-container">
           <div className="App-section">
-            <CollapseStoryBlock></CollapseStoryBlock>
+            <CollapseStoryBlock data={submissions}/>
+          </div>
+          <div className="buttonDiv">
+          <button className='moreStoriesButton' onClick={loadStories}>See More Stories</button>
           </div>
         </div>
       </div>
@@ -71,5 +98,3 @@ function App() {
 }
 
 export default App;
-
-//            <NameBlock data={submissions}/>
