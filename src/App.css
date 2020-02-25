@@ -148,6 +148,7 @@
   background-color: #b7e4cf;
   padding: 0px 14px;
   height: 50px;
+  border: none;
   white-space: nowrap;
   display: flex;
   flex-direction: column;
@@ -305,7 +306,7 @@ label{
   padding-left: 15px;
   padding-top: 10px;
   padding-bottom: 31px;
-  grid-column: span 2;
+  grid-column: span 3;
   grid-row: span 7;
   text-align: left;
   display: grid;

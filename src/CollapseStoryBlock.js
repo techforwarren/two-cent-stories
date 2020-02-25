@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Name from './Name';
-import JoinUsSingle from './JoinUsSingle';
+import AddYourStory from './AddYourStory';
 
 export function CollapseStoryBlock(props){
+
+    const [formActive, setFormActive] = useState(false);
+
+    function changeState(){
+        setFormActive(!formActive);
+    }
 
     return(
         <div className="NameBlock">
@@ -11,7 +17,9 @@ export function CollapseStoryBlock(props){
                 <Name key={post.id} firstName={post.firstName} debt={post.debt} story={post.story}></Name>
                 </>
             ))}
-            <JoinUsSingle key={0} firstName={'You?'} debt='?' story={"Share your story"}></JoinUsSingle>
+            <button onClick={changeState} className="JoinUsSingle">Add Your Story</button>
+            {formActive && 
+            <AddYourStory></AddYourStory>}
         </div>    
     );
 }

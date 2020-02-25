@@ -1,8 +1,9 @@
 import React from 'react';
 
 export function JoinUsSingle(props){
+
     return(
-    <div className="JoinUsSingle">Add Your Story</div>
+    <button onClick={changeState} className="JoinUsSingle">Add Your Story</button>
     );
 }
 export default JoinUsSingle;
