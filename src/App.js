@@ -32,7 +32,8 @@ function App() {
         <div className="App-container">
           <div className="App-section">
             <title>How Elizabeth Warren Would Make Bloomberg Pay Your Student Loans</title>
-            <h2 className="text-lg">Michael Bloomberg has proposed a $700 million plan to tackle student debt. But under Elizabeth Warren’s <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a> plan, Bloomberg would pay <a href="https://elizabethwarren.com/calculator/ultra-millionaire-tax">$3.16 billion</a>next year alone.</h2>
+            <h2 className="text-lg">Michael Bloomberg has spent over $500 million of his own funds on his campaign. Even with $60 billion to spare, he hasn't (yet) offered to personally pay off any student loan debt.</h2>
+   <h2 className="text-lg">Under Elizabeth Warren’s <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a> plan, Bloomberg would pay <a href="https://elizabethwarren.com/calculator/ultra-millionaire-tax">$3.16 billion</a>next year alone.</h2>
             <h2 className="text-lg">That’s enough money to pay off student loan debt for ...</h2>
           </div>
         </div>
@@ -66,7 +67,7 @@ function App() {
 
 
  <p className="text-base text-center">
-              It’s hard to imagine just how much one billion dollars really is—let alone three <i>trillion</i>. To help show how much Warren’s Ultra Millionaire tax could help all Americans, we wanted to show the tangible, human impact of the funds generated from one billionaire alone. Numbers can feel abstract, but behind every number in Warren’s plan are millions of people—andtheir stories.</p>
+              It’s hard to imagine just how much one billion dollars really is—let alone three <i>trillion</i>. To help show how much Warren’s Ultra Millionaire tax could help all Americans, we wanted to show the tangible, human impact of the funds generated from one billionaire alone. Numbers can feel abstract, but behind every number in Warren’s plan are millions of people——and their stories.</p>
             <div className="disclaimer text-center">
               <p>Not affiliated with the Warren For President campaign</p>
               <p>This site was created independently by volunteers. <a href="https://elizabethwarren.com/all-in-for-warren/">Join us!</a></p>
