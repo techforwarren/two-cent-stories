@@ -22,10 +22,19 @@ function App() {
       fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + 2 + "&from=" + lastSub)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         setTotalDebt(data[0]['total_debt'])
         setSubmissions(submissions.concat(data[0]['submissions']))
         setTotalSubs(data[0]['count_submissions']);
-      })
+      }).catch(function() {
+        console.log("error");
+        setTotalDebt(0)
+        setSubmissions([
+          {firstName: "", verifiedDate: "", debt: 0, story: ""},
+          {firstName: "", verifiedDate: "", debt: 0, story: ""}
+        ])
+        setTotalSubs(2);
+    });
     }
 
     else{
