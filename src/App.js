@@ -55,6 +55,14 @@ function App() {
     setLastSub(newLastSub)
   }
 
+  function getStoriesLeft(){
+    if(totalSubs-lastSub >= 0){
+      return (totalSubs-lastSub);
+    } else {
+      return 0;
+    }
+  }
+
   function moneyLeft(){
     return(bloombergTotal-totalDebt);
   }
@@ -77,7 +85,9 @@ function App() {
             <CollapseStoryBlock data={submissions}/>
           </div>
           <div className="buttonDiv">
-          <button className='moreStoriesButton' onClick={loadStories}>See More Stories</button>
+            {getStoriesLeft() > 0 &&
+          <button className='moreStoriesButton' onClick={loadStories}>and {getStoriesLeft()} more stories</button>
+            }
           </div>
         </div>
       </div>

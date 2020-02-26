@@ -129,7 +129,7 @@
 /* */
 
 .moreStoriesButton{
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: 700;
   font-size: 1.125rem;
   background: #e9e9e9;
@@ -140,6 +140,7 @@
 .buttonDiv{
   text-align: center;
   padding-top: 2rem;
+  
 }
 
 /* */
@@ -150,6 +151,7 @@
   height: 50px;
   border: none;
   white-space: nowrap;
+  font-weight: 700;
   display: flex;
   flex-direction: column;
   justify-content: center;
