@@ -71,7 +71,7 @@ function App() {
       <div className="App-header">
         <div className="App-container">
           <div className="App-section">
-            <title>How Elizabeth Warren Would Make Bloomberg Pay Your Student Loans</title>
+            <h1>How Elizabeth Warren Would Make Bloomberg Pay Your Student Loans</h1>
             <h2 className="text-lg">Michael Bloomberg has spent over $500 million trying to buy this election. Elizabeth Warren has a better plan for all that cash.</h2>
    <h2 className="text-lg">Under Elizabeth’s <a href="https://elizabethwarren.com/plans/ultra-millionaire-tax">Ultra-Millionaire Tax</a> plan, Bloomberg would pay <a href="https://elizabethwarren.com/calculator/ultra-millionaire-tax">$3.16 billion</a> next year alone.</h2>
             <h2 className="text-lg">That’s enough money to pay off student loan debt for ...</h2>
