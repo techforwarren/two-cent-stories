@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'typeface-roboto';
 import './App.css';
 import NameBlock from './NameBlock';
+import CollapseStoryBlock from './CollapseStoryBlock';
 
 function App() {
 
@@ -11,19 +12,60 @@ function App() {
   const [submissions, setSubmissions] = useState([]);
   const [totalDebt, setTotalDebt] = useState(0);
 
+  const [lastSub, setLastSub] = useState(0);
+  const [totalSubs, setTotalSubs] = useState(0);
+  const limit = 12;
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_ENDPOINT)
+    
+    if(lastSub === 0){
+      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + 2 + "&from=" + lastSub)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         setTotalDebt(data[0]['total_debt'])
-        setSubmissions(data[0]['submissions'])
-      })
-    }, [])
-
-    function moneyLeft(){
-      return(bloombergTotal-totalDebt);
+        setSubmissions(submissions.concat(data[0]['submissions']))
+        setTotalSubs(data[0]['count_submissions']);
+      }).catch(function() {
+        console.log("error");
+        setTotalDebt(0)
+        setSubmissions([
+          {firstName: "", verifiedDate: "", debt: 0, story: ""},
+          {firstName: "", verifiedDate: "", debt: 0, story: ""}
+        ])
+        setTotalSubs(2);
+    });
     }
+
+    else{
+      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + limit + "&from=" + lastSub)
+        .then((res) => res.json())
+        .then((data) => {
+          setTotalDebt(data[0]['total_debt'])
+          setSubmissions(submissions.concat(data[0]['submissions']))
+          setTotalSubs(data[0]['count_submissions']);
+        })
+    }
+    
+    }, [lastSub])
+
+
+  function loadStories(){
+    let newLastSub = lastSub + limit;
+    setLastSub(newLastSub)
+  }
+
+  function getStoriesLeft(){
+    if(totalSubs-lastSub >= 0){
+      return (totalSubs-lastSub);
+    } else {
+      return 0;
+    }
+  }
+
+  function moneyLeft(){
+    return(bloombergTotal-totalDebt);
+  }
 
   return (
     <div className="App">
@@ -42,7 +84,12 @@ function App() {
       <div className="App-main">
         <div className="App-container">
           <div className="App-section">
-            <NameBlock data={submissions}/>
+            <CollapseStoryBlock data={submissions}/>
+          </div>
+          <div className="buttonDiv">
+            {getStoriesLeft() > 0 &&
+          <button className='moreStoriesButton' onClick={loadStories}>and {getStoriesLeft()} more stories</button>
+            }
           </div>
         </div>
       </div>
