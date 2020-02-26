@@ -6,28 +6,29 @@ import CollapseStoryBlock from './CollapseStoryBlock';
 
 function App() {
 
-//  const billGatesTotal = 6379000000;
   const bloombergTotal = 3163000000;
-
+  
+  const limit = 12;
+  const initialStories = 2;
+  
   const [submissions, setSubmissions] = useState([]);
   const [totalDebt, setTotalDebt] = useState(0);
-
+  const [storiesLeft, setStoriesLeft] = useState(0)
   const [lastSub, setLastSub] = useState(0);
   const [totalSubs, setTotalSubs] = useState(0);
-  const limit = 12;
+
 
   useEffect(() => {
     
     if(lastSub === 0){
-      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + 2 + "&from=" + lastSub)
+      fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + initialStories)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
         setTotalDebt(data[0]['total_debt'])
         setSubmissions(submissions.concat(data[0]['submissions']))
         setTotalSubs(data[0]['count_submissions']);
+        setStoriesLeft(data[0]['count_submissions']-initialStories)
       }).catch(function() {
-        console.log("error");
         setTotalDebt(0)
         setSubmissions([
           {firstName: "", verifiedDate: "", debt: 0, story: ""},
@@ -36,7 +37,6 @@ function App() {
         setTotalSubs(2);
     });
     }
-
     else{
       fetch(process.env.REACT_APP_API_ENDPOINT + "?limit=" + limit + "&from=" + lastSub)
         .then((res) => res.json())
@@ -51,16 +51,14 @@ function App() {
 
 
   function loadStories(){
-    let newLastSub = lastSub + limit;
-    setLastSub(newLastSub)
-  }
-
-  function getStoriesLeft(){
-    if(totalSubs-lastSub >= 0){
-      return (totalSubs-lastSub);
+    if(lastSub === 0){
+      let newLastSub = lastSub + initialStories;
+      setLastSub(newLastSub)
     } else {
-      return 0;
+      let newLastSub = lastSub + limit;
+      setLastSub(newLastSub)
     }
+    setStoriesLeft(storiesLeft - limit)
   }
 
   function moneyLeft(){
@@ -87,8 +85,8 @@ function App() {
             <CollapseStoryBlock data={submissions}/>
           </div>
           <div className="buttonDiv">
-            {getStoriesLeft() > 0 &&
-          <button className='moreStoriesButton' onClick={loadStories}>and {getStoriesLeft()} more stories</button>
+            {storiesLeft > 0 &&
+              <button className='moreStoriesButton' onClick={loadStories}>and {storiesLeft} more stories</button>
             }
           </div>
         </div>
